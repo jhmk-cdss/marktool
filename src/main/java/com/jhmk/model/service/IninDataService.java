@@ -30,11 +30,13 @@ public class IninDataService {
      * 初始化数据
      */
     @PostConstruct
-
     public void initData() {
         initYizhuMap();
     }
 
+    /**
+     * 将医嘱项名称 对应目的假如map
+     */
     public void initYizhuMap() {
         Iterable<ZlfaMianDiagnosisDetail> all = zlfaMianDiagnosisDetailRepService.findAll();
         Iterator<ZlfaMianDiagnosisDetail> iterator = all.iterator();
