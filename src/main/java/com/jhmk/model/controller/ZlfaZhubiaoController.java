@@ -14,6 +14,7 @@ import com.jhmk.model.model.AtResponse;
 import com.jhmk.model.model.ResponseCode;
 import com.jhmk.model.service.ZlfaMianDiagnosisDetailService;
 import com.jhmk.model.service.ZlfaZhubiaoService;
+import com.jhmk.model.util.CompareUtil;
 import com.jhmk.model.util.UrlConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,10 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ziyu.zhou
@@ -218,8 +216,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         JSONObject object = JSONObject.parseObject(map);
         String dischargeMainDiagnosis = object.getString("dischargeMainDiagnosis");
         List<ZlfaZhubiao> allByDischargeMainDiagnosis = zlfaZhubiaoRepService.findAllByDischargeMainDiagnosis(dischargeMainDiagnosis);
-        List<Integer> idList = new ArrayList<>(allByDischargeMainDiagnosis.size());
-        allByDischargeMainDiagnosis.forEach(s -> idList.add(s.getId()));
+        List<String> idList = new ArrayList<>(allByDischargeMainDiagnosis.size());
+        allByDischargeMainDiagnosis.forEach(s -> idList.add(s.getPatientId() + "#" + s.getVisitId()));
         resp.setData(idList);
         resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);
@@ -264,7 +262,16 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                 }
             }
         }
-        wirte(response, list);
+        Map<CollectionCompareBean, Integer> resultMap = new HashMap<>();
+        for (CollectionCompareBean collectionCompareBean : list) {
+            if (resultMap.containsKey(collectionCompareBean)) {
+                resultMap.put(collectionCompareBean, resultMap.get(collectionCompareBean) + 1);
+            } else {
+                resultMap.put(collectionCompareBean, 1);
+            }
+        }
+        ArrayList<Map.Entry<Object, Integer>> entryArrayList = CompareUtil.compareMapForValue(resultMap, -1);
+        wirte(response, entryArrayList);
     }
 
 

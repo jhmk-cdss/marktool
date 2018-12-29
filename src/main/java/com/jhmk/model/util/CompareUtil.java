@@ -218,12 +218,18 @@ public class CompareUtil {
         return sortedMap;
     }
 
-    public static ArrayList<Map.Entry<Object, Integer>> compareMapForValue(Map tempMap) {
+    public static ArrayList<Map.Entry<Object, Integer>> compareMapForValue(Map tempMap, int sort) {
         ArrayList<Map.Entry<Object, Integer>> tepmList = new ArrayList<>(tempMap.entrySet());
         Collections.sort(tepmList, new Comparator<Map.Entry<Object, Integer>>() {
             @Override
             public int compare(Map.Entry<Object, Integer> o1, Map.Entry<Object, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
+                if (sort == 1) {
+
+                    return o1.getValue().compareTo(o2.getValue());
+                } else {
+                    return o2.getValue().compareTo(o1.getValue());
+
+                }
             }
         });
         return tepmList;
