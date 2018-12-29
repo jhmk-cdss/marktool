@@ -231,6 +231,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
      */
     @PostMapping("/analyzeZlfaMainDischargeMainDiagnosis")
     public void analyzeZlfa(HttpServletResponse response, @RequestBody String map) {
+        AtResponse resp = new AtResponse();
         JSONObject object = JSONObject.parseObject(map);
         String dischargeMainDiagnosis = object.getString("dischargeMainDiagnosis");
         List<ZlfaZhubiao> allByDischargeMainDiagnosis = zlfaZhubiaoRepService.findAllByDischargeMainDiagnosis(dischargeMainDiagnosis);
@@ -270,8 +271,18 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                 resultMap.put(collectionCompareBean, 1);
             }
         }
-        ArrayList<Map.Entry<Object, Integer>> entryArrayList = CompareUtil.compareMapForValue(resultMap, -1);
-        wirte(response, entryArrayList);
+
+        List<CollectionCompareBean> resultList = new ArrayList<>(resultMap.size());
+        for (Map.Entry<CollectionCompareBean, Integer> entry : resultMap.entrySet()) {
+            CollectionCompareBean key = entry.getKey();
+            Integer value = entry.getValue();
+            key.setCount(value);
+            resultList.add(key);
+        }
+        Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
+        resp.setData(resultList);
+        resp.setResponseCode(ResponseCode.OK);
+        wirte(response, resp);
     }
 
 
