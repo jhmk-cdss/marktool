@@ -23,4 +23,9 @@ public interface ZlfaZhubiaoRepository extends JpaRepository<ZlfaZhubiao, Intege
     List<String> getDistinctDischargeMainDiagnosis();
 
     List<ZlfaZhubiao> findAllByDischargeMainDiagnosis(String dischargeMainDiagnosis);
+
+    ZlfaZhubiao findFirstByPatientIdAndVisitId(String patientId, String visitId);
+
+    @Query("delete from ZlfaZhubiao z where z.id>?1")
+    void deleteGtById(Integer id);
 }

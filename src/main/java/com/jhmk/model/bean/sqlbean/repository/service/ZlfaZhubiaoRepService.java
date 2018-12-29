@@ -80,5 +80,15 @@ public class ZlfaZhubiaoRepService extends BaseRepService<ZlfaZhubiao, Integer> 
         return repository.findAllByDischargeMainDiagnosis(name);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public ZlfaZhubiao findFirstByPatientIdAndVisitId(String pid, String vid) {
+        return repository.findFirstByPatientIdAndVisitId(pid, vid);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void deleteGtById(Integer id) {
+        repository.deleteGtById(id);
+    }
+
 
 }

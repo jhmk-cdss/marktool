@@ -1,7 +1,7 @@
 package com.jhmk.model.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jhmk.model.base.BaseController;
 import com.jhmk.model.base.BaseEntityController;
 import com.jhmk.model.bean.rule.Rule;
 import com.jhmk.model.bean.sqlbean.*;
@@ -16,7 +16,6 @@ import com.jhmk.model.service.ZlfaMianDiagnosisDetailService;
 import com.jhmk.model.service.ZlfaZhubiaoService;
 import com.jhmk.model.util.UrlConstants;
 import org.apache.commons.lang3.StringUtils;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +74,40 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             e.printStackTrace();
             resp.setResponseCode(ResponseCode.INERERROR);
         }
+        wirte(response, resp);
+    }
+
+    @PostMapping("/deleteList")
+    public void deleteList(HttpServletResponse response, @RequestBody String map) {
+        JSONObject object = JSONObject.parseObject(map);
+        JSONArray jsonArray = object.getJSONArray("id");
+        Iterator<Object> iterator = jsonArray.iterator();
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
+        while (iterator.hasNext()) {
+            Object next = iterator.next();
+            Integer id = Integer.valueOf(next.toString());
+            try {
+                zlfaZhubiaoRepService.delete(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        resp.setResponseCode(ResponseCode.OK);
+        wirte(response, resp);
+    }
+
+    @PostMapping("/deletByCondition")
+    public void deletByCondition(HttpServletResponse response, @RequestBody String map) {
+        JSONObject parse = JSONObject.parseObject(map);
+        Integer id = parse.getInteger("id");
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
+
+        try {
+            zlfaZhubiaoRepService.deleteGtById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);
     }
 
@@ -253,8 +286,19 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     @PostMapping("/saveZlfazhubiaoByRule")
     public void runDatabase(HttpServletResponse response, @RequestBody String map) {
         Rule rule = JSONObject.parseObject(map, Rule.class);
-        ZlfaZhubiao zhubiao = zlfaZhubiaoService.rule2ZlfaZhubiao(rule);
-        wirte(response, zhubiao);
+        String patientId = rule.getPatient_id();
+        String visitId = rule.getVisit_id();
+        ZlfaZhubiao firstByPatientIdAndVisitId = zlfaZhubiaoRepService.findFirstByPatientIdAndVisitId(patientId, visitId);
+        if (firstByPatientIdAndVisitId == null) {
+            ZlfaZhubiao zhubiao = zlfaZhubiaoService.rule2ZlfaZhubiao(rule);
+            ZlfaZhubiao zlfaZhubiao = zlfaZhubiaoService.getZlfaZhubiaoResult(zhubiao);
+            List<ZlfaModel> zlfaModelList = zlfaZhubiao.getZlfaModelList();
+            if (zlfaModelList.size() > 0) {
+                ZlfaZhubiao save = zlfaZhubiaoRepService.save(zlfaZhubiao);
+                wirte(response, save);
+            }
+        }
+
     }
 
 

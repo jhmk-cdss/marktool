@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.jhmk.model.service.IninDataService.yizhuMap;
+
 /**
  * @author ziyu.zhou
  * @date 2018/12/17 10:29
@@ -194,6 +196,71 @@ public class ZlfaZhubiaoService {
         return zhubiao;
     }
 
+    public ZlfaZhubiao getZlfaZhubiaoResult(ZlfaZhubiao zhubiao) {
+        //治疗方案模型
+        List<ZlfaModel> zlfaModelList = zhubiao.getZlfaModelList();
+        for (ZlfaModel zlfaModel : zlfaModelList) {
+            zlfaModel.setZlfaZhubiao(zhubiao);
+            //主疾病治疗方案明细
+            List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = zlfaModel.getZlfaMianDiagnosisDetailList();
+            if (zlfaMianDiagnosisDetailList != null) {
+                for (ZlfaMianDiagnosisDetail bean : zlfaMianDiagnosisDetailList) {
+                    bean.setZlfaModel(zlfaModel);
+                    ZlfaOrderModel zlfaOrderModel = bean.getZlfaOrderModel();
+                    Optional.ofNullable(zlfaOrderModel).ifPresent(s -> zlfaOrderModel.setZlfaMianDiagnosisDetail(bean));
+                }
+            }
+
+            //伴随疾病治疗方案明细
+            List<ZlfaSubordinationDiagnosisDetail> zlfaSubordinationDiagnosisDetailList = zlfaModel.getZlfaSubordinationDiagnosisDetailList();
+            if (zlfaSubordinationDiagnosisDetailList != null && zlfaSubordinationDiagnosisDetailList.size() > 0) {
+                for (ZlfaSubordinationDiagnosisDetail zlfaSubordinationDiagnosisDetail : zlfaSubordinationDiagnosisDetailList) {
+                    zlfaSubordinationDiagnosisDetail.setZlfaModel(zlfaModel);
+                    ZlfaOrderModel zlfaOrderModel = zlfaSubordinationDiagnosisDetail.getZlfaOrderModel();
+                    Optional.ofNullable(zlfaOrderModel).ifPresent(s -> zlfaOrderModel.setZlfaSubordinationDiagnosisDetail(zlfaSubordinationDiagnosisDetail));
+                }
+            }
+            //增加
+            List<ZlfaUpdateAddModel> increaseList = zlfaModel.getIncreaseList();
+            if (increaseList != null && increaseList.size() > 0) {
+                for (ZlfaUpdateAddModel zlfnUpdateAddModel : increaseList) {
+                    zlfnUpdateAddModel.setZlfaModel(zlfaModel);
+                    //事件模型
+                    List<ZlfaIncidentModel> zlfaIncidentModelList = zlfnUpdateAddModel.getZlfaIncidentModelList();
+                    if (zlfaIncidentModelList != null) {
+
+                        for (ZlfaIncidentModel zlfaIncidentModel : zlfaIncidentModelList) {
+                            zlfaIncidentModel.setZlfaUpdateAddModel(zlfnUpdateAddModel);
+                        }
+                    }
+                    //医嘱模型
+                    ZlfaOrderModel zlfaOrderModel = zlfnUpdateAddModel.getZlfaOrderModel();
+                    zlfaOrderModel.setZlfaUpdateAddModel(zlfnUpdateAddModel);
+                }
+            }
+            //减少
+            List<ZlfaUpdateDeleteModel> decreaseList = zlfaModel.getDecreaseList();
+            if (decreaseList != null && !decreaseList.isEmpty()) {
+
+                for (ZlfaUpdateDeleteModel zlfnUpdateDeleteModel : decreaseList) {
+                    zlfnUpdateDeleteModel.setZlfaModel(zlfaModel);
+                    //治疗方案事件模型
+                    List<ZlfaIncidentModel> zlfaIncidentModelList = zlfnUpdateDeleteModel.getZlfaIncidentModelList();
+                    if (zlfaIncidentModelList != null) {
+
+                        for (ZlfaIncidentModel zlfaIncidentModel : zlfaIncidentModelList) {
+                            zlfaIncidentModel.setZlfaUpdateDeleteModel(zlfnUpdateDeleteModel);
+                        }
+                    }
+                    ZlfaOrderModel zlfaOrderModel = zlfnUpdateDeleteModel.getZlfaOrderModel();
+                    zlfaOrderModel.setZlfaUpdateDeleteModel(zlfnUpdateDeleteModel);
+                }
+            }
+
+        }
+        return zhubiao;
+    }
+
     public ZlfaZhubiao rule2ZlfaZhubiao(Rule rule) {
         ZlfaZhubiao zhubiao = new ZlfaZhubiao();
         String patientId = rule.getPatient_id();
@@ -204,7 +271,7 @@ public class ZlfaZhubiaoService {
 //        List<Shouyeshoushu> shouyeshoushu = rule.getShouyeshoushu();
 
         List<Yizhu> yizhuList = rule.getYizhu();
-//        List<Shouyezhenduan> shouyezhenduan = rule.getShouyezhenduan();
+        List<Shouyeshoushu> shouyeshoushu = rule.getShouyeshoushu();
         String rycz = rule.getRycz();
         String cyzd = rule.getCyzd();
         if (binganshouye != null) {
@@ -251,10 +318,9 @@ public class ZlfaZhubiaoService {
         //todo 返回所有治疗方案
 //        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList);
         //todo 返回初始治疗方案
-        List<ZlfaModel> zlfaModelList = getZlfaModel(dayTimeList, yizhuList);
+        List<ZlfaModel> zlfaModelList = getZlfaModel(dayTimeList, yizhuList, shouyeshoushu);
+        zlfaModelList.forEach(s -> s.setZlfaZhubiao(zhubiao));
         zhubiao.setZlfaModelList(zlfaModelList);
-//        }
-
         return zhubiao;
     }
 
@@ -431,6 +497,36 @@ public class ZlfaZhubiaoService {
         return resultList;
     }
 
+    public List<ZlfaModel> getZlfaModel(List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
+        List<ZlfaModel> resultList = new ArrayList<>();
+        //
+        //第一天开医嘱时间
+        if (orderTimeList.size() > 0) {
+            String orderTime = orderTimeList.get(0);
+            ZlfaModel zlfaModel = new ZlfaModel();
+            //治疗方案num
+            zlfaModel.setTreatmentPlanNum("1");
+            //将数据放入治疗方案
+            List<Yizhu> tempYizhu = new ArrayList<>();
+            Set<String> tempNames = new HashSet<>();
+            for (Yizhu bean : yizhuList) {
+                if (orderTime.compareTo(bean.getDayTime()) >= 0 && !tempNames.contains(bean.getOrder_item_name())) {
+                    tempNames.add(bean.getOrder_item_name());
+                    tempYizhu.add(bean);
+                }
+            }
+            List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = getZlfaMianDiagnosisDetail(orderTime, tempYizhu, shouyeshoushuList);
+            zlfaModel.setZlfaMianDiagnosisDetailList(zlfaMianDiagnosisDetailList);
+            List<ZlfaUpdateAddModel> zlfaUpdateAddModelList = getZlfaUpdateAddModel(orderTime, tempYizhu);
+            zlfaModel.setIncreaseList(zlfaUpdateAddModelList);
+            List<ZlfaUpdateDeleteModel> zlfaUpdateDeleteModelList = getZlfaUpdateDeleteModel(orderTime, tempYizhu);
+            zlfaModel.setDecreaseList(zlfaUpdateDeleteModelList);
+            resultList.add(zlfaModel);
+        }
+
+        return resultList;
+    }
+
     /**
      * 返回比对时间当天结束的医嘱集合
      *
@@ -499,10 +595,54 @@ public class ZlfaZhubiaoService {
             if (orderTime.equals(yizhu.getDayTime()) || ("长期".equals(yizhu.getOrder_properties_name()) && orderTime.compareTo(yizhu.getEndDayTime()) < 0)) {
                 //将主疾病理疗方案放入治疗方案model
                 ZlfaOrderModel zlfaModel = getZlfaModel(yizhu);
+                String order_item_name = yizhu.getOrder_item_name();
+                if (yizhuMap.containsKey(order_item_name)) {
+                    ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail1 = yizhuMap.get(order_item_name);
+                    zlfaMianDiagnosisDetail.setMedicineTreatment(zlfaMianDiagnosisDetail1.getMedicineTreatment());
+                    zlfaMianDiagnosisDetail.setTreatmentGoals(zlfaMianDiagnosisDetail1.getTreatmentGoals());
+                }
                 zlfaMianDiagnosisDetail.setZlfaOrderModel(zlfaModel);
                 resultList.add(zlfaMianDiagnosisDetail);
             }
         }
+        return resultList;
+    }
+
+    public List<ZlfaMianDiagnosisDetail> getZlfaMianDiagnosisDetail(String orderTime, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
+        List<ZlfaMianDiagnosisDetail> resultList = new ArrayList<>();
+        for (int j = 0; j < yizhuList.size(); j++) {
+            Yizhu yizhu = yizhuList.get(j);
+            //主疾病治疗方案
+            ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = new ZlfaMianDiagnosisDetail();
+            //医嘱模型  当天开的医嘱+之前开的长期且未结束（结束时间>比对时间）的医嘱
+            if (orderTime.equals(yizhu.getDayTime()) || ("长期".equals(yizhu.getOrder_properties_name()) && orderTime.compareTo(yizhu.getEndDayTime()) < 0)) {
+                //将主疾病理疗方案放入治疗方案model
+                ZlfaOrderModel zlfaModel = getZlfaModel(yizhu);
+                String order_item_name = yizhu.getOrder_item_name();
+                if (yizhuMap.containsKey(order_item_name)) {
+                    ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail1 = yizhuMap.get(order_item_name);
+                    zlfaMianDiagnosisDetail.setMedicineTreatment(zlfaMianDiagnosisDetail1.getMedicineTreatment());
+                    zlfaMianDiagnosisDetail.setTreatmentGoals(zlfaMianDiagnosisDetail1.getTreatmentGoals());
+                }
+                zlfaMianDiagnosisDetail.setZlfaOrderModel(zlfaModel);
+                resultList.add(zlfaMianDiagnosisDetail);
+            }
+        }
+        /**
+         * 骨科 手术也作为主诊断第一次治疗
+         */
+        Set<String> shoushuSet = new HashSet<>();
+        for (Shouyeshoushu shouyeshoushu : shouyeshoushuList) {
+            shoushuSet.add(shouyeshoushu.getOperation_name());
+        }
+        for (String name : shoushuSet) {
+            ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = new ZlfaMianDiagnosisDetail();
+            zlfaMianDiagnosisDetail.setTreatmentGoals("手术治疗");
+            zlfaMianDiagnosisDetail.setMedicineTreatment(name);
+            resultList.add(zlfaMianDiagnosisDetail);
+
+        }
+
         return resultList;
     }
 
