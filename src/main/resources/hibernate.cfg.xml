@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="connection.url">jdbc:mysql://localhost:3306/yunemr_test</property>
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+      <mapping class="com.jhmk.model.bean.sqlbean.BiaozhuJbzdcause"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.BiaozhuJbzdmodel"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.BiaozhuTzysmodel"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.BiaozhuZhubiao"/>
+      <mapping class="com.jhmk.model.bean.PatInfo"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.BiaozhuJbzdcause"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaIncidentModel"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaMianDiagnosisDetail"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaModel"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaOrderModel"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaSubordinationDiagnosisDetail"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaUpdateDiagnosisDetail"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaZhubiao"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaUpdateAddModel"/>
+      <mapping class="com.jhmk.model.bean.sqlbean.ZlfaUpdateDeleteModel"/>
+      <!-- <property name="connection.username"/> -->
+    <!-- <property name="connection.password"/> -->
+
+    <!-- DB schema will be updated if needed -->
+    <!-- <property name="hbm2ddl.auto">update</property> -->
+  </session-factory>
+</hibernate-configuration>
