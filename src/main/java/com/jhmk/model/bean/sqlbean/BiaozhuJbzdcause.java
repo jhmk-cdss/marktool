@@ -1,5 +1,6 @@
 package com.jhmk.model.bean.sqlbean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -19,6 +20,7 @@ public class BiaozhuJbzdcause {
     private int id;
     private String differentialDiagnosisLab;
     private String differentialDiagnosisExam;
+    @JSONField(serialize=false)
     private BiaozhuJbzdmodel biaozhuJbzdmodel ;//鉴别诊断疾病特征因素
     private List<BiaozhuTzysmodel> patientFeatures;//患者具有的特征因素
     private List<BiaozhuTzysmodel> differentialDiagnosisFeatures;//鉴别诊断疾病特征因素

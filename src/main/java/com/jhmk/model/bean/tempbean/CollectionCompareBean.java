@@ -1,9 +1,9 @@
 package com.jhmk.model.bean.tempbean;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jhmk.model.bean.sqlbean.ZlfaZhubiao;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author ziyu.zhou
@@ -13,6 +13,8 @@ import java.util.Objects;
 public class CollectionCompareBean {
     private Collection<ZlfaCompareBean> columnMetaData;
     private Integer count;
+    private String id;
+    private Set<String> idList = new HashSet<>();
 
     public Collection<ZlfaCompareBean> getColumnMetaData() {
         return columnMetaData;
@@ -39,6 +41,22 @@ public class CollectionCompareBean {
             return false;
         }
         return columnMetaData.containsAll(that.getColumnMetaData());
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Set<String> getIdList() {
+        return idList;
+    }
+
+    public void setIdList(Set<String> idList) {
+        this.idList = idList;
     }
 
     @Override

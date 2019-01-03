@@ -1,5 +1,6 @@
 package com.jhmk.model.bean.sqlbean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -19,6 +20,7 @@ public class BiaozhuJbzdmodel {
     private String differentialDiagnosisNum;
     private String differentialDiagnosisName;
     private String differentialDiagnosisCauseDescribe;
+    @JSONField(serialize=false)
     private BiaozhuZhubiao biaozhuZhubiao;
     private List<BiaozhuJbzdcause> biaozhuJbzdcauseList;
 

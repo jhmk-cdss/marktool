@@ -41,6 +41,14 @@ public class BiaozhuzhubiaoController extends BaseEntityController<BiaozhuZhubia
         wirte(response, resp);
     }
 
+    @PostMapping("/findOne")
+    public void findOne(HttpServletResponse response, @RequestBody String map) {
+        JSONObject object = JSONObject.parseObject(map);
+        Integer id = object.getInteger("id");
+        BiaozhuZhubiao one = biaozhuZhubiaoRepService.findOne(id);
+        wirte(response, one);
+    }
+
     @PostMapping("/test")
     public void test(HttpServletResponse response, @RequestBody String map) {
         AtResponse resp = new AtResponse(System.currentTimeMillis());

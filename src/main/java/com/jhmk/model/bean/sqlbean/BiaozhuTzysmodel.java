@@ -1,5 +1,6 @@
 package com.jhmk.model.bean.sqlbean;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -23,7 +24,9 @@ public class BiaozhuTzysmodel {
     private String featuresQuantizationUnit;
     private String featuresQuantizationResult;
     private String featuresQualResult;
+    @JSONField(serialize=false)
     private BiaozhuJbzdcause patientFeature;
+    @JSONField(serialize=false)
     private BiaozhuJbzdcause differentialDiagnosisFeature;
 
     @Id
