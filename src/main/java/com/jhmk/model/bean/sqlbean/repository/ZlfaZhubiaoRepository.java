@@ -3,9 +3,11 @@ package com.jhmk.model.bean.sqlbean.repository;
 import com.jhmk.model.bean.sqlbean.ZlfaZhubiao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -22,10 +24,16 @@ public interface ZlfaZhubiaoRepository extends JpaRepository<ZlfaZhubiao, Intege
     @Query("select distinct (z.dischargeMainDiagnosis) from ZlfaZhubiao z ")
     List<String> getDistinctDischargeMainDiagnosis();
 
+    @Query("select z.id from ZlfaZhubiao z where z.id>?1")
+    List<Integer> getGtIdList(Integer id);
+
+
     List<ZlfaZhubiao> findAllByDischargeMainDiagnosis(String dischargeMainDiagnosis);
 
     ZlfaZhubiao findFirstByPatientIdAndVisitId(String patientId, String visitId);
 
+    @Modifying
+    @Transactional
     @Query("delete from ZlfaZhubiao z where z.id>?1")
     void deleteGtById(Integer id);
 }

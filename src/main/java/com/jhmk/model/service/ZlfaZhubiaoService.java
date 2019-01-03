@@ -265,7 +265,6 @@ public class ZlfaZhubiaoService {
         ZlfaZhubiao zhubiao = new ZlfaZhubiao();
         String patientId = rule.getPatient_id();
         String visitId = rule.getVisit_id();
-        String id = rule.getId();
         Binganshouye binganshouye = rule.getBinganshouye();
         //todo  骨科
 //        List<Shouyeshoushu> shouyeshoushu = rule.getShouyeshoushu();
@@ -316,9 +315,9 @@ public class ZlfaZhubiaoService {
 //                }
 //            }
         //todo 返回所有治疗方案
-//        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList);
+        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList, shouyeshoushu);
         //todo 返回初始治疗方案
-        List<ZlfaModel> zlfaModelList = getZlfaModel(dayTimeList, yizhuList, shouyeshoushu);
+//        List<ZlfaModel> zlfaModelList = getZlfaModel(dayTimeList, yizhuList, shouyeshoushu);
         zlfaModelList.forEach(s -> s.setZlfaZhubiao(zhubiao));
         zhubiao.setZlfaModelList(zlfaModelList);
         return zhubiao;
@@ -331,6 +330,7 @@ public class ZlfaZhubiaoService {
         String id = rule.getId();
         Binganshouye binganshouye = rule.getBinganshouye();
         List<Yizhu> yizhuList = rule.getYizhu();
+        List<Shouyeshoushu> shouyeshoushu = rule.getShouyeshoushu();
 //        List<Shouyezhenduan> shouyezhenduan = rule.getShouyezhenduan();
         String rycz = rule.getRycz();
         String cyzd = rule.getCyzd();
@@ -371,7 +371,7 @@ public class ZlfaZhubiaoService {
         ArrayList<String> dayTimeList = new ArrayList(dayTimeSet);
         Collections.sort(dayTimeList);
 //        Collections.sort(yizhuList, CompareUtil.createComparator(-1, "dayTime"));
-        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList);
+        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList,shouyeshoushu);
         zhubiao.setZlfaModelList(zlfaModelList);
         return zhubiao;
     }
@@ -443,13 +443,14 @@ public class ZlfaZhubiaoService {
      * @param yizhuList
      * @return
      */
-    public List<ZlfaModel> getZlfaModelList(List<String> orderTimeList, List<Yizhu> yizhuList) {
+    public List<ZlfaModel> getZlfaModelList(List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
         List<ZlfaModel> resultList = new ArrayList<>();
         //
         for (int i = 1; i <= orderTimeList.size(); i++) {
             //时间
             String orderTime = orderTimeList.get(i - 1);
             ZlfaModel zlfaModel = new ZlfaModel();
+
             //治疗方案num
             zlfaModel.setTreatmentPlanNum(String.valueOf(i));
             //将数据放入治疗方案
@@ -460,7 +461,12 @@ public class ZlfaZhubiaoService {
                     tempYizhu.add(bean);
                 }
             }
-            List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = getZlfaMianDiagnosisDetail(orderTime, tempYizhu);
+            List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = null;
+            if (i == 1) {
+                zlfaMianDiagnosisDetailList = getZlfaMianDiagnosisDetail(orderTime, tempYizhu, shouyeshoushuList);
+            } else {
+                zlfaMianDiagnosisDetailList = getZlfaMianDiagnosisDetail(orderTime, tempYizhu);
+            }
             zlfaModel.setZlfaMianDiagnosisDetailList(zlfaMianDiagnosisDetailList);
             List<ZlfaUpdateAddModel> zlfaUpdateAddModelList = getZlfaUpdateAddModel(orderTime, tempYizhu);
             zlfaModel.setIncreaseList(zlfaUpdateAddModelList);
@@ -471,31 +477,31 @@ public class ZlfaZhubiaoService {
         return resultList;
     }
 
-    public List<ZlfaModel> getZlfaModel(List<String> orderTimeList, List<Yizhu> yizhuList) {
-        List<ZlfaModel> resultList = new ArrayList<>();
-        //
-        //第一天开医嘱时间
-        String orderTime = orderTimeList.get(0);
-        ZlfaModel zlfaModel = new ZlfaModel();
-        //治疗方案num
-        zlfaModel.setTreatmentPlanNum("1");
-        //将数据放入治疗方案
-        List<Yizhu> tempYizhu = new ArrayList<>();
-        for (Yizhu bean : yizhuList) {
-            if (orderTime.compareTo(bean.getDayTime()) >= 0) {
-                tempYizhu.add(bean);
-            }
-        }
-        List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = getZlfaMianDiagnosisDetail(orderTime, tempYizhu);
-        zlfaModel.setZlfaMianDiagnosisDetailList(zlfaMianDiagnosisDetailList);
-
-        List<ZlfaUpdateAddModel> zlfaUpdateAddModelList = getZlfaUpdateAddModel(orderTime, tempYizhu);
-        zlfaModel.setIncreaseList(zlfaUpdateAddModelList);
-        List<ZlfaUpdateDeleteModel> zlfaUpdateDeleteModelList = getZlfaUpdateDeleteModel(orderTime, tempYizhu);
-        zlfaModel.setDecreaseList(zlfaUpdateDeleteModelList);
-        resultList.add(zlfaModel);
-        return resultList;
-    }
+//    public List<ZlfaModel> getZlfaModel(List<String> orderTimeList, List<Yizhu> yizhuList) {
+//        List<ZlfaModel> resultList = new ArrayList<>();
+//        //
+//        //第一天开医嘱时间
+//        String orderTime = orderTimeList.get(0);
+//        ZlfaModel zlfaModel = new ZlfaModel();
+//        //治疗方案num
+//        zlfaModel.setTreatmentPlanNum("1");
+//        //将数据放入治疗方案
+//        List<Yizhu> tempYizhu = new ArrayList<>();
+//        for (Yizhu bean : yizhuList) {
+//            if (orderTime.compareTo(bean.getDayTime()) >= 0) {
+//                tempYizhu.add(bean);
+//            }
+//        }
+//        List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = getZlfaMianDiagnosisDetail(orderTime, tempYizhu);
+//        zlfaModel.setZlfaMianDiagnosisDetailList(zlfaMianDiagnosisDetailList);
+//
+//        List<ZlfaUpdateAddModel> zlfaUpdateAddModelList = getZlfaUpdateAddModel(orderTime, tempYizhu);
+//        zlfaModel.setIncreaseList(zlfaUpdateAddModelList);
+//        List<ZlfaUpdateDeleteModel> zlfaUpdateDeleteModelList = getZlfaUpdateDeleteModel(orderTime, tempYizhu);
+//        zlfaModel.setDecreaseList(zlfaUpdateDeleteModelList);
+//        resultList.add(zlfaModel);
+//        return resultList;
+//    }
 
     public List<ZlfaModel> getZlfaModel(List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
         List<ZlfaModel> resultList = new ArrayList<>();

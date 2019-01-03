@@ -1,5 +1,6 @@
 package com.jhmk.model.bean.tempbean;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,6 +15,7 @@ public class ZlfaCompareBean {
     private String medicineTreatment;
     //医嘱
     private String orderItemName;
+
 
     public String getTreatmentGoals() {
         return treatmentGoals;
@@ -38,6 +40,8 @@ public class ZlfaCompareBean {
     public void setOrderItemName(String orderItemName) {
         this.orderItemName = orderItemName;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

@@ -21,6 +21,7 @@ public class ZlfaMianDiagnosisDetail implements Serializable {
     private int id;
     private String treatmentGoals;
     private String medicineTreatment;
+    private int notIncludedOrderIndicator;
     @JSONField(serialize=false)
     private  ZlfaModel zlfaModel;
     //    private List<ZlfaOrderModel>zlfaOrderModelList;//医嘱模型
@@ -68,7 +69,17 @@ public class ZlfaMianDiagnosisDetail implements Serializable {
         this.zlfaModel = zlfaModel;
     }
 
-//    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "zlfaMianDiagnosisDetail")
+    @Basic
+    @Column(name = "not_included_order_indicator")
+    public int getNotIncludedOrderIndicator() {
+        return notIncludedOrderIndicator;
+    }
+
+    public void setNotIncludedOrderIndicator(int notIncludedOrderIndicator) {
+        this.notIncludedOrderIndicator = notIncludedOrderIndicator;
+    }
+
+    //    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "zlfaMianDiagnosisDetail")
 //    public List<ZlfaOrderModel> getZlfaOrderModelList() {
 //        return zlfaOrderModelList;
 //    }

@@ -99,9 +99,11 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         JSONObject parse = JSONObject.parseObject(map);
         Integer id = parse.getInteger("id");
         AtResponse resp = new AtResponse(System.currentTimeMillis());
-
+        List<Integer> gtIdList = zlfaZhubiaoRepService.getGtIdList(id);
         try {
-            zlfaZhubiaoRepService.deleteGtById(id);
+            for (Integer sid : gtIdList) {
+                zlfaZhubiaoRepService.delete(sid);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -238,11 +240,14 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         List<CollectionCompareBean> list = new ArrayList<>();
         lable:
         for (ZlfaZhubiao zhubiao : allByDischargeMainDiagnosis) {
+            String patientId = zhubiao.getPatientId();
+            String visitId = zhubiao.getVisitId();
             //治疗方案
             List<ZlfaCompareBean> zlfaCompareBeanList = new ArrayList<>();
             List<ZlfaModel> zlfaModelList = zhubiao.getZlfaModelList();
             if (zlfaModelList != null && zlfaModelList.size() > 0) {
                 for (ZlfaModel zlfaModel : zlfaModelList) {
+
                     if ("1".equals(zlfaModel.getTreatmentPlanNum())) {
                         List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = zlfaModel.getZlfaMianDiagnosisDetailList();
                         for (ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail : zlfaMianDiagnosisDetailList) {
@@ -257,6 +262,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                         }
                         CollectionCompareBean collectionCompareBean = new CollectionCompareBean();
                         collectionCompareBean.setColumnMetaData(zlfaCompareBeanList);
+                        collectionCompareBean.setId("BJDXDSYY#" + patientId + "#" + visitId);
                         list.add(collectionCompareBean);
                         continue lable;
                     }
@@ -268,6 +274,10 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             if (resultMap.containsKey(collectionCompareBean)) {
                 resultMap.put(collectionCompareBean, resultMap.get(collectionCompareBean) + 1);
             } else {
+                Set<String> idList = new HashSet<>(1);
+//                idList.add()
+                collectionCompareBean.setIdList(idList);
+
                 resultMap.put(collectionCompareBean, 1);
             }
         }

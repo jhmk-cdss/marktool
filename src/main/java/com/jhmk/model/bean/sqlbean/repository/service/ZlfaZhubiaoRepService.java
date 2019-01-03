@@ -81,6 +81,11 @@ public class ZlfaZhubiaoRepService extends BaseRepService<ZlfaZhubiao, Integer> 
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<Integer> getGtIdList(Integer id) {
+        return repository.getGtIdList(id);
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public ZlfaZhubiao findFirstByPatientIdAndVisitId(String pid, String vid) {
         return repository.findFirstByPatientIdAndVisitId(pid, vid);
     }
