@@ -175,8 +175,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     @PostMapping("/returnInitData")
     public void returnInitData(HttpServletResponse response, @RequestBody String map) {
         JSONObject object = JSONObject.parseObject(map);
-        String patient_id = object.getString("patient_id");
-        String visitId = object.getString("visit_id");
+        String patient_id = object.getString("pid");
+        String visitId = object.getString("vid");
         ZlfaZhubiao firstByPatientIdAndVisitId = zlfaZhubiaoRepService.findFirstByPatientIdAndVisitId(patient_id, visitId);
         if (firstByPatientIdAndVisitId != null) {
             wirte(response, firstByPatientIdAndVisitId);
@@ -189,7 +189,6 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         }
 
     }
-
 
     /**
      * 查询所有出院主诊断疾病名
@@ -284,13 +283,14 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                         CollectionCompareBean collectionCompareBean = new CollectionCompareBean();
                         collectionCompareBean.setColumnMetaData(zlfaCompareBeanList);
                         collectionCompareBean.setId("BJDXDSYY#" + patientId + "#" + visitId);
+                        collectionCompareBean.setCount(1);
                         list.add(collectionCompareBean);
                         continue lable;
                     }
                 }
             }
         }
-        Map<CollectionCompareBean, Integer> resultMap = new HashMap<>();
+   /*     Map<CollectionCompareBean, Integer> resultMap = new HashMap<>();
         for (CollectionCompareBean collectionCompareBean : list) {
             if (resultMap.containsKey(collectionCompareBean)) {
                 resultMap.put(collectionCompareBean, resultMap.get(collectionCompareBean) + 1);
@@ -312,8 +312,73 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         }
         Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
         resp.setData(resultList);
+        */
+
+        List<CollectionCompareBean> resultList = new ArrayList<>();
+        for (CollectionCompareBean bean : list) {
+            if (resultList.contains(bean)) {
+                int i = resultList.indexOf(bean);
+                CollectionCompareBean collectionCompareBean = list.get(i);
+                collectionCompareBean.setCount(collectionCompareBean.getCount() + 1);
+            } else {
+                bean.setCount(1);
+                resultList.add(bean);
+            }
+        }
+        Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
+        resp.setData(resultList);
         resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);
+    }
+
+    public static void main(String[] args) {
+
+        List<CollectionCompareBean> resultList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            CollectionCompareBean collectionCompareBean1 = new CollectionCompareBean();
+            List<ZlfaCompareBean> list1 = new ArrayList<>();
+            ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
+            zlfaCompareBean.setOrderItemName("1");
+            zlfaCompareBean.setMedicineTreatment("1");
+            zlfaCompareBean.setTreatmentGoals("1");
+            ZlfaCompareBean zlfaCompareBean2 = new ZlfaCompareBean();
+            zlfaCompareBean2.setOrderItemName("2");
+            zlfaCompareBean2.setMedicineTreatment("2");
+            zlfaCompareBean2.setTreatmentGoals("2");
+            list1.add(zlfaCompareBean);
+            list1.add(zlfaCompareBean2);
+            collectionCompareBean1.setColumnMetaData(list1);
+            resultList.add(collectionCompareBean1);
+        }
+
+        CollectionCompareBean collectionCompareBean1 = new CollectionCompareBean();
+        List<ZlfaCompareBean> list1 = new ArrayList<>();
+        ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
+        zlfaCompareBean.setOrderItemName("1");
+        zlfaCompareBean.setMedicineTreatment("1");
+        zlfaCompareBean.setTreatmentGoals("1");
+        ZlfaCompareBean zlfaCompareBean2 = new ZlfaCompareBean();
+        zlfaCompareBean2.setOrderItemName("2");
+        zlfaCompareBean2.setMedicineTreatment("2");
+        zlfaCompareBean2.setTreatmentGoals("2");
+        list1.add(zlfaCompareBean2);
+        list1.add(zlfaCompareBean);
+        collectionCompareBean1.setColumnMetaData(list1);
+        resultList.add(collectionCompareBean1);
+
+        Map<CollectionCompareBean, Integer> resultMap = new HashMap<>();
+        for (CollectionCompareBean collectionCompareBean : resultList) {
+            if (resultMap.containsKey(collectionCompareBean)) {
+                resultMap.put(collectionCompareBean, resultMap.get(collectionCompareBean) + 1);
+            } else {
+                Set<String> idList = new HashSet<>(1);
+//                idList.add()
+                collectionCompareBean.setIdList(idList);
+
+                resultMap.put(collectionCompareBean, 1);
+            }
+        }
+        System.out.println(resultMap);
     }
 
 

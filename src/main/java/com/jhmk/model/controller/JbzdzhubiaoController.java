@@ -82,8 +82,8 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
         logger.info("接受到的数据为：{}", map);
         String s = restTemplate.postForObject(urlPropertiesConfig.getTestToolUrl() + UrlConstants.getDataByPIdAndVId, parse, String.class);
         Rule rule = JSONObject.parseObject(s, Rule.class);
-//        ZlfaZhubiao zhubiao = zlfaZhubiaoService.rule2ZlfaZhubiao(rule);
-//        wirte(response, zhubiao);
+        BiaozhuZhubiao biaozhuZhubiao = jbzdZhubiaoService.rule2JbzdZhubiao(rule);
+        wirte(response, biaozhuZhubiao);
     }
 
 

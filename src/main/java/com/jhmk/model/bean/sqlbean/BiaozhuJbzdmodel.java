@@ -19,6 +19,7 @@ public class BiaozhuJbzdmodel {
     private int id;
     private String differentialDiagnosisNum;
     private String differentialDiagnosisName;
+    private String diagnosisName;
     private String differentialDiagnosisCauseDescribe;
     @JSONField(serialize=false)
     private BiaozhuZhubiao biaozhuZhubiao;
@@ -64,6 +65,17 @@ public class BiaozhuJbzdmodel {
 
     public void setDifferentialDiagnosisName(String differentialDiagnosisName) {
         this.differentialDiagnosisName = differentialDiagnosisName;
+    }
+
+
+    @Basic
+    @Column(name = "diagnosis_name", nullable = true, length = 50)
+    public String getDiagnosisName() {
+        return diagnosisName;
+    }
+
+    public void setDiagnosisName(String diagnosisName) {
+        this.diagnosisName = diagnosisName;
     }
 
     @Basic

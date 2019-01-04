@@ -2,6 +2,7 @@ package com.jhmk.model.bean.tempbean;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jhmk.model.bean.sqlbean.ZlfaZhubiao;
+import com.jhmk.model.util.CompareUtil;
 
 import java.util.*;
 
@@ -63,6 +64,70 @@ public class CollectionCompareBean {
     public int hashCode() {
 
         return Objects.hash(columnMetaData);
+    }
+
+
+    public static void main(String[] args) {
+        List<CollectionCompareBean>list=new ArrayList<>();
+        CollectionCompareBean collectionCompareBean1 = new CollectionCompareBean();
+        collectionCompareBean1.setCount(1);
+
+        List<ZlfaCompareBean> list1 = new ArrayList<>();
+        ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
+        zlfaCompareBean.setOrderItemName("1");
+        zlfaCompareBean.setMedicineTreatment("1");
+        zlfaCompareBean.setTreatmentGoals("1");
+        ZlfaCompareBean zlfaCompareBean2 = new ZlfaCompareBean();
+        zlfaCompareBean2.setOrderItemName("2");
+        zlfaCompareBean2.setMedicineTreatment("2");
+        zlfaCompareBean2.setTreatmentGoals("2");
+        list1.add(zlfaCompareBean2);
+        list1.add(zlfaCompareBean);
+        collectionCompareBean1.setColumnMetaData(list1);
+        list.add(collectionCompareBean1);
+
+        CollectionCompareBean collectionCompareBean2 = new CollectionCompareBean();
+        collectionCompareBean2.setCount(1);
+        List<ZlfaCompareBean> list2 = new ArrayList<>();
+        ZlfaCompareBean zlfaCompareBean3 = new ZlfaCompareBean();
+        zlfaCompareBean3.setOrderItemName("1");
+        zlfaCompareBean3.setMedicineTreatment("1");
+        zlfaCompareBean3.setTreatmentGoals("1");
+        ZlfaCompareBean zlfaCompareBean44 = new ZlfaCompareBean();
+        zlfaCompareBean44.setOrderItemName("2");
+        zlfaCompareBean44.setMedicineTreatment("2");
+        zlfaCompareBean44.setTreatmentGoals("2");
+        list2.add(zlfaCompareBean3);
+        list2.add(zlfaCompareBean44);
+        collectionCompareBean2.setColumnMetaData(list2);
+        list.add(collectionCompareBean2);
+//        Map<CollectionCompareBean, Integer> map = new HashMap<>();
+//        map.put(collectionCompareBean1,1);
+//        if (list.contains(collectionCompareBean2)){
+//            int i = list.indexOf(collectionCompareBean2);
+//            CollectionCompareBean collectionCompareBean = list.get(i);
+//            collectionCompareBean.setCount(collectionCompareBean.getCount()+1);
+//        }
+        //重写  重复次数
+        List<CollectionCompareBean> resultList = new ArrayList<>();
+        for (CollectionCompareBean bean : list) {
+            if (resultList.contains(bean)) {
+                int i = resultList.indexOf(bean);
+                CollectionCompareBean collectionCompareBean = list.get(i);
+                collectionCompareBean.setCount(collectionCompareBean.getCount() + 1);
+            } else {
+                bean.setCount(1);
+                resultList.add(bean);
+            }
+        }
+        Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
+
+        System.out.println(list.contains(collectionCompareBean2));
+        int i = list.indexOf(collectionCompareBean2);
+        System.out.println(i);
+//        boolean b = map.containsKey(collectionCompareBean2);
+//        System.out.println(b);
+//        System.out.println(collectionCompareBean1.equals(collectionCompareBean2));
     }
 
     @Override
