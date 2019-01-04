@@ -1,24 +1,25 @@
 package com.jhmk.model.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jhmk.model.bean.rule.*;
 import com.jhmk.model.bean.sqlbean.*;
 import com.jhmk.model.bean.sqlbean.repository.service.*;
+import com.jhmk.model.util.CompareUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author ziyu.zhou
  * @date 2018/12/17 10:29
  */
 @Service
-public class BiaozhuZhubiaoService {
+public class JbzdZhubiaoService {
     @Autowired
     ZlfaZhubiaoRepService zlfaZhubiaoRepService;
     @Autowired
-    BiaozhuZhubiaoService zlfaZhubiaoService;
+    JbzdZhubiaoService zlfaZhubiaoService;
     @Autowired
     ZlfaModelRepService zlfaModelRepService;
     @Autowired
@@ -149,6 +150,39 @@ public class BiaozhuZhubiaoService {
         return zhubiao;
 
     }
+
+
+    public BiaozhuZhubiao rule2ZlfaZhubiao(Rule rule) {
+        BiaozhuZhubiao zhubiao = new BiaozhuZhubiao();
+        String patientId = rule.getPatient_id();
+        String visitId = rule.getVisit_id();
+        Binganshouye binganshouye = rule.getBinganshouye();
+        String rycz = rule.getRycz();
+        String cyzd = rule.getCyzd();
+        if (binganshouye != null) {
+            zhubiao.setDoctorId(binganshouye.getPat_visit_dept_request_doctor_name());
+            zhubiao.setAdmissionMainDiagnosis(rycz);
+            zhubiao.setDischargeMainDiagnosis(cyzd);
+            zhubiao.setDeptName(binganshouye.getDept_admission_to_name());
+            zhubiao.setCreateTime(new Date());
+            zhubiao.setHospitalName("北医三院");
+            zhubiao.setDischargeMainDiagnosis(cyzd);
+            zhubiao.setPatientId(patientId);
+            zhubiao.setVisitId(visitId);
+        }
+        //首次病程
+        Shoucibingchengjilu shoucibingchengjilu = rule.getShoucibingchengjilu();
+        //诊断与鉴别诊断
+        DiagnosisAndDifferentialDiagnosis diagnosisAndDifferentialDiagnosis = shoucibingchengjilu.getDiagnosisAndDifferentialDiagnosis();
+        List<FirstCourseDifferentialDiagnosis> firstCourseDifferentialDiagnosisList = diagnosisAndDifferentialDiagnosis.getFirstCourseDifferentialDiagnosisList();
+        //鉴别诊断模型
+        List<BiaozhuJbzdmodel> biaozhuJbzdmodelList = new ArrayList<>(firstCourseDifferentialDiagnosisList.size());
+        for (FirstCourseDifferentialDiagnosis differentialDiagnosis : firstCourseDifferentialDiagnosisList) {
+            String differential_diagnostic_no = differentialDiagnosis.getDifferential_diagnostic_no();
+        }
+        return zhubiao;
+    }
+
 //    public void saveAll(String map) {
 //        ZlfaZhubiao zlfaZhubiao = JSONObject.parseObject(map, ZlfaZhubiao.class);
 //        List<ZlfaModel> zlfaModelList = zlfaZhubiao.getZlfaModelList();

@@ -58,6 +58,17 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         AtResponse resp = super.listDataByMap(params, zlfaZhubiaoRepService, "createTime");
         wirte(response, resp);
     }
+    @PostMapping("/search")
+    public void search(HttpServletResponse response, @RequestBody String map) {
+        JSONObject object = JSONObject.parseObject(map);
+        String patient_id = object.getString("patient_id");
+        String visitId = object.getString("visit_id");
+        ZlfaZhubiao firstByPatientIdAndVisitId = zlfaZhubiaoRepService.findFirstByPatientIdAndVisitId(patient_id, visitId);
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
+        resp.setResponseCode(ResponseCode.OK);
+        resp.setData(firstByPatientIdAndVisitId);
+        wirte(response, resp);
+    }
 
 
     @PostMapping("/delete")

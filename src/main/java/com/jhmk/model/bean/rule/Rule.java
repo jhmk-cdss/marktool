@@ -50,6 +50,7 @@ public class Rule implements Serializable {
     private List<Yizhu> yizhu;
     private List<Shangjiyishichafanglu> shangjiyishichafangluList;
     private List<Shouyeshoushu> shouyeshoushu;
+    private Shoucibingchengjilu shoucibingchengjilu;
 
     public int getQzDay() {
         return qzDay;
@@ -202,6 +203,14 @@ public class Rule implements Serializable {
 
     public void setShangjiyishichafangluList(List<Shangjiyishichafanglu> shangjiyishichafangluList) {
         this.shangjiyishichafangluList = shangjiyishichafangluList;
+    }
+
+    public Shoucibingchengjilu getShoucibingchengjilu() {
+        return shoucibingchengjilu;
+    }
+
+    public void setShoucibingchengjilu(Shoucibingchengjilu shoucibingchengjilu) {
+        this.shoucibingchengjilu = shoucibingchengjilu;
     }
 
     public int getReqc() {

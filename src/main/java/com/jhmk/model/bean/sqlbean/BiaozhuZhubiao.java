@@ -20,7 +20,7 @@ public class BiaozhuZhubiao {
     private String hospitalName;
     private String deptName;
     private String deptStandardName;
-    private Integer doctorId;
+    private String doctorId;
     private String patientId;
     private String visitId;
     private String admissionMainDiagnosis;
@@ -72,11 +72,11 @@ public class BiaozhuZhubiao {
 
     @Basic
     @Column(name = "doctor_id", nullable = true)
-    public Integer getDoctorId() {
+    public String getDoctorId() {
         return doctorId;
     }
 
-    public void setDoctorId(Integer doctorId) {
+    public void setDoctorId(String doctorId) {
         this.doctorId = doctorId;
     }
 

@@ -8,8 +8,11 @@ import java.io.Serializable;
  */
 
 public class Shoucibingchengjilu implements Serializable {
-   private String differential_diagnostic_disease_name;//鉴别诊断疾病名
-   private String disease_name;//鉴别原疾病'
+
+    private String differential_diagnostic_disease_name;//鉴别诊断疾病名
+    private String disease_name;//鉴别原疾病'
+    private DiagnosisAndDifferentialDiagnosis diagnosisAndDifferentialDiagnosis;//鉴别依据-疾病特点'
+    private TreatmentPlan treatmentPlan;//诊疗计划
 
 
 
@@ -27,5 +30,13 @@ public class Shoucibingchengjilu implements Serializable {
 
     public void setDisease_name(String disease_name) {
         this.disease_name = disease_name;
+    }
+
+    public DiagnosisAndDifferentialDiagnosis getDiagnosisAndDifferentialDiagnosis() {
+        return diagnosisAndDifferentialDiagnosis;
+    }
+
+    public void setDiagnosisAndDifferentialDiagnosis(final DiagnosisAndDifferentialDiagnosis diagnosisAndDifferentialDiagnosis) {
+        this.diagnosisAndDifferentialDiagnosis = diagnosisAndDifferentialDiagnosis;
     }
 }
