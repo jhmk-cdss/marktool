@@ -550,7 +550,7 @@ public class ZlfaZhubiaoService {
             //医嘱模型
             if (orderTime.equals(yizhuList.get(j).getEndDayTime())) {
                 //将主疾病理疗方案放入治疗方案model
-                ZlfaOrderModel zlfaModel = getZlfaModel(yizhu);
+                ZlfaOrderModel zlfaModel = getZlfaOrderModel(yizhu);
                 zlfaUpdateDeleteModel.setZlfaOrderModel(zlfaModel);
                 resultList.add(zlfaUpdateDeleteModel);
             }
@@ -575,7 +575,7 @@ public class ZlfaZhubiaoService {
             //医嘱模型
             if (orderTime.equals(yizhuList.get(j).getDayTime())) {
                 //将主疾病理疗方案放入治疗方案model
-                ZlfaOrderModel zlfaModel = getZlfaModel(yizhu);
+                ZlfaOrderModel zlfaModel = getZlfaOrderModel(yizhu);
                 zlfaUpdateAddModel.setZlfaOrderModel(zlfaModel);
                 resultList.add(zlfaUpdateAddModel);
             }
@@ -600,7 +600,7 @@ public class ZlfaZhubiaoService {
             //医嘱模型  当天开的医嘱+之前开的长期且未结束（结束时间>比对时间）的医嘱
             if (orderTime.equals(yizhu.getDayTime()) || ("长期".equals(yizhu.getOrder_properties_name()) && orderTime.compareTo(yizhu.getEndDayTime()) < 0)) {
                 //将主疾病理疗方案放入治疗方案model
-                ZlfaOrderModel zlfaModel = getZlfaModel(yizhu);
+                ZlfaOrderModel zlfaModel = getZlfaOrderModel(yizhu);
                 String order_item_name = yizhu.getOrder_item_name();
                 if (yizhuMap.containsKey(order_item_name)) {
                     ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail1 = yizhuMap.get(order_item_name);
@@ -623,7 +623,7 @@ public class ZlfaZhubiaoService {
             //医嘱模型  当天开的医嘱+之前开的长期且未结束（结束时间>比对时间）的医嘱
             if (orderTime.equals(yizhu.getDayTime()) || ("长期".equals(yizhu.getOrder_properties_name()) && orderTime.compareTo(yizhu.getEndDayTime()) < 0)) {
                 //将主疾病理疗方案放入治疗方案model
-                ZlfaOrderModel zlfaModel = getZlfaModel(yizhu);
+                ZlfaOrderModel zlfaModel = getZlfaOrderModel(yizhu);
                 String order_item_name = yizhu.getOrder_item_name();
                 if (yizhuMap.containsKey(order_item_name)) {
                     ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail1 = yizhuMap.get(order_item_name);
@@ -653,7 +653,7 @@ public class ZlfaZhubiaoService {
     }
 
 
-    public ZlfaOrderModel getZlfaModel(Yizhu yizhu) {
+    public ZlfaOrderModel getZlfaOrderModel(Yizhu yizhu) {
         ZlfaOrderModel zlfaOrderModel = new ZlfaOrderModel();
         if (yizhu == null) {
             return null;

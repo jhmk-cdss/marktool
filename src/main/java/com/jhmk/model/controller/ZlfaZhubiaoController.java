@@ -58,6 +58,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         AtResponse resp = super.listDataByMap(params, zlfaZhubiaoRepService, "createTime");
         wirte(response, resp);
     }
+
     @PostMapping("/search")
     public void search(HttpServletResponse response, @RequestBody String map) {
         JSONObject object = JSONObject.parseObject(map);
@@ -173,11 +174,20 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
      */
     @PostMapping("/returnInitData")
     public void returnInitData(HttpServletResponse response, @RequestBody String map) {
-        Object parse = JSONObject.parse(map);
-        String s = restTemplate.postForObject(urlPropertiesConfig.getTestToolUrl() + UrlConstants.getDataByPIdAndVId, parse, String.class);
-        Rule rule = JSONObject.parseObject(s, Rule.class);
-        ZlfaZhubiao zhubiao = zlfaZhubiaoService.ruleToZlfaZhubiao(rule);
-        wirte(response, zhubiao);
+        JSONObject object = JSONObject.parseObject(map);
+        String patient_id = object.getString("patient_id");
+        String visitId = object.getString("visit_id");
+        ZlfaZhubiao firstByPatientIdAndVisitId = zlfaZhubiaoRepService.findFirstByPatientIdAndVisitId(patient_id, visitId);
+        if (firstByPatientIdAndVisitId != null) {
+            wirte(response, firstByPatientIdAndVisitId);
+        } else {
+            Object parse = JSONObject.parse(map);
+            String s = restTemplate.postForObject(urlPropertiesConfig.getTestToolUrl() + UrlConstants.getDataByPIdAndVId, parse, String.class);
+            Rule rule = JSONObject.parseObject(s, Rule.class);
+            ZlfaZhubiao zhubiao = zlfaZhubiaoService.ruleToZlfaZhubiao(rule);
+            wirte(response, zhubiao);
+        }
+
     }
 
 

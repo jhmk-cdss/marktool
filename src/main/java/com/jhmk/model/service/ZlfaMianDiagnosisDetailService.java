@@ -66,7 +66,7 @@ public class ZlfaMianDiagnosisDetailService {
                         for (Yizhu yizhu : yizhuList) {
                             String order_item_name = yizhu.getOrder_item_name();
                             if (order_item_name.contains(medicineTreatment)) {
-                                ZlfaOrderModel tempModel = zlfaZhubiaoService.getZlfaModel(yizhu);
+                                ZlfaOrderModel tempModel = zlfaZhubiaoService.getZlfaOrderModel(yizhu);
                                 tempModel.setZlfaMianDiagnosisDetail(next);
                                 next.setZlfaOrderModel(tempModel);
                                 zlfaMianDiagnosisDetailRepService.save(next);
