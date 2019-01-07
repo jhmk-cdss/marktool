@@ -68,5 +68,10 @@ public class ZlfaMianDiagnosisDetailRepService extends BaseRepService<ZlfaMianDi
         return repository.findAll(pageable);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<ZlfaMianDiagnosisDetail> findAllByMedicineTreatmentIsNull() {
+        return repository.findAllByMedicineTreatmentIsNull();
+    }
+
 
 }

@@ -43,6 +43,11 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
     @Autowired
     UrlPropertiesConfig urlPropertiesConfig;
 
+    /**
+     * 条件查询
+     * @param response
+     * @param map
+     */
     @PostMapping("/list")
     public void list(HttpServletResponse response, @RequestBody String map) {
         Map params = (Map) JSONObject.parse(map);
@@ -50,6 +55,11 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
         wirte(response, resp);
     }
 
+    /**
+     * 主键查询
+     * @param response
+     * @param map
+     */
     @PostMapping("/findOne")
     public void findOne(HttpServletResponse response, @RequestBody String map) {
         JSONObject object = JSONObject.parseObject(map);

@@ -6,22 +6,22 @@ spring:
   data:
     mongodb:
       port: 20000
-#      host: 192.168.8.22
-      host: 192.168.132.4
+      host: 192.168.8.22
+#      host: 192.168.132.4
       database: CDSS_test
 #      uri: mongodb://192.168.8.22:20000/CDSS_test
   datasource:
-#    url: jdbc:mysql://localhost:3306/yunemr?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
-#    url: jdbc:mysql://192.168.8.22:3306/yunemr_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
-    url: jdbc:mysql://192.168.132.4:3306/yunemr?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+#    url: jdbc:mysql://localhost:3306/yunemr_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    url: jdbc:mysql://192.168.8.22:3306/yunemr_test?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+#    url: jdbc:mysql://192.168.132.4:3306/yunemr?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
 #    url:  jdbc:log4jdbc:mysql://192.168.8.22:3306/yunemr?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
 #    url: jdbc:mysql://192.168.8.22:3306/jhmk_waring?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
 #    driver-class-name: net.sf.log4jdbc.DriverSpy
     username: root
-#    password: root
-    password: 123456
+    password: root
+#    password: 123456
   jpa:
     database: mysql
     generate-ddl: true
-    show-sql: false
+    show-sql: true
