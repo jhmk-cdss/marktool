@@ -319,9 +319,18 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             if (resultList.contains(bean)) {
                 int i = resultList.indexOf(bean);
                 CollectionCompareBean collectionCompareBean = list.get(i);
+                Set<String> idList = collectionCompareBean.getIdList();
+                String id = bean.getId();
+                System.out.println(idList.contains(id));
+                idList.add(id);
+                bean.setIdList(idList);
                 collectionCompareBean.setCount(collectionCompareBean.getCount() + 1);
             } else {
                 bean.setCount(1);
+                Set<String> idList = new HashSet<>();
+                String id = bean.getId();
+                idList.add(id);
+                bean.setIdList(idList);
                 resultList.add(bean);
             }
         }

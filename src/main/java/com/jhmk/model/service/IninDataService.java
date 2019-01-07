@@ -3,6 +3,7 @@ package com.jhmk.model.service;
 import com.jhmk.model.bean.sqlbean.ZlfaMianDiagnosisDetail;
 import com.jhmk.model.bean.sqlbean.ZlfaOrderModel;
 import com.jhmk.model.bean.sqlbean.repository.service.ZlfaMianDiagnosisDetailRepService;
+import com.jhmk.model.util.ReadResourceUtil;
 import com.jhmk.model.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author ziyu.zhou
@@ -31,7 +33,7 @@ public class IninDataService {
      */
     @PostConstruct
     public void initData() {
-        initYizhuMap();
+//        initYizhuMap();
     }
 
     /**
@@ -52,4 +54,17 @@ public class IninDataService {
             }
         }
     }
+
+    /**
+     * 医嘱 对应 治疗方案目的  初始化
+     */
+    public void readZlfaPurpose() {
+        Set<String> strListByFileNmae = ReadResourceUtil.getStrListByFileNmae("purpose.txt");
+        for (String str:strListByFileNmae) {
+            String[] split = str.trim().split(",");
+
+        }
+        
+    }
+
 }

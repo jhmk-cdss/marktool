@@ -90,6 +90,11 @@ public class ZlfaZhubiaoRepService extends BaseRepService<ZlfaZhubiao, Integer> 
         return repository.findFirstByPatientIdAndVisitId(pid, vid);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<ZlfaZhubiao> findByPatientIdAndVisitId(String pid, String vid) {
+        return repository.findByPatientIdAndVisitId(pid, vid);
+    }
+
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteGtById(Integer id) {
         repository.deleteGtById(id);

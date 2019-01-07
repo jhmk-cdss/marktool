@@ -9,6 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ziyu.zhou
@@ -32,8 +33,22 @@ public interface ZlfaZhubiaoRepository extends JpaRepository<ZlfaZhubiao, Intege
 
     ZlfaZhubiao findFirstByPatientIdAndVisitId(String patientId, String visitId);
 
+    List<ZlfaZhubiao> findByPatientIdAndVisitId(String patientId, String visitId);
+
     @Modifying
     @Transactional
     @Query("delete from ZlfaZhubiao z where z.id>?1")
     void deleteGtById(Integer id);
+
+    /**
+     * 查询重复项
+     *
+     * @param
+     * @return
+     */
+    @Query("select count(z), z.patientId,z.visitId from ZlfaZhubiao z group by z.patientId,z.visitId having count (z) >1")
+    List<Object> getMapGt2Count();
+
+
+
 }
