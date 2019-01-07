@@ -335,6 +335,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             }
         }
         Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
+        logger.info("=============》》》》》》》》》》》》》治疗方案总共{}种",resultList.size());
         resp.setData(resultList);
         resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);
