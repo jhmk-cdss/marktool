@@ -321,7 +321,6 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                 CollectionCompareBean collectionCompareBean = list.get(i);
                 Set<String> idList = collectionCompareBean.getIdList();
                 String id = bean.getId();
-                System.out.println(idList.contains(id));
                 idList.add(id);
                 bean.setIdList(idList);
                 collectionCompareBean.setCount(collectionCompareBean.getCount() + 1);
