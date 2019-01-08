@@ -20,7 +20,7 @@ import java.util.Set;
  * @date 2018/12/29 14:24
  */
 @Service
-public class IninDataService {
+public class InitDataService {
     @Autowired
     ZlfaMianDiagnosisDetailRepService zlfaMianDiagnosisDetailRepService;
     /**

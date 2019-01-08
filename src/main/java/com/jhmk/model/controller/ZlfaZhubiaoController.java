@@ -321,7 +321,6 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                 CollectionCompareBean collectionCompareBean = list.get(i);
                 Set<String> idList = collectionCompareBean.getIdList();
                 String id = bean.getId();
-                System.out.println(idList.contains(id));
                 idList.add(id);
                 bean.setIdList(idList);
                 collectionCompareBean.setCount(collectionCompareBean.getCount() + 1);
@@ -335,6 +334,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             }
         }
         Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
+        logger.info("=============》》》》》》》》》》》》》治疗方案总共{}种",resultList.size());
         resp.setData(resultList);
         resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);
