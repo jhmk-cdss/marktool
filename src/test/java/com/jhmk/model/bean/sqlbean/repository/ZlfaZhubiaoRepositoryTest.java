@@ -30,7 +30,7 @@ public class ZlfaZhubiaoRepositoryTest {
 
     @Test
     public void getMapGt2Count() {
-        List<ZlfaZhubiao> mapGt2Count = zlfaZhubiaoRepository.getMapGt2Count();
+        List<Object> mapGt2Count = zlfaZhubiaoRepository.getMapGt2Count();
 
         System.out.println(mapGt2Count);
     }

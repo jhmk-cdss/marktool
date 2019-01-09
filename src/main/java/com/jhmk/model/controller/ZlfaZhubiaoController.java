@@ -227,6 +227,43 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     }
 
     /**
+     * 获取所有治疗方案
+     *
+     * @param response
+     */
+    @PostMapping("/updateFangan")
+    public void updateFangan(HttpServletResponse response, @RequestBody(required = false) String map) {
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
+        Iterable<ZlfaZhubiao> all = zlfaZhubiaoRepService.findAll();
+        Iterator<ZlfaZhubiao> iterator = all.iterator();
+        while (iterator.hasNext()) {
+            ZlfaZhubiao next = iterator.next();
+            String patientId = next.getPatientId();
+            String visitId = next.getVisitId();
+            Map<String, String> param = new HashMap<>(2);
+            param.put("patientId", patientId);
+            param.put("visitId", visitId);
+            Object parse = JSONObject.toJSON(param);
+            String s = restTemplate.postForObject(urlPropertiesConfig.getTestToolUrl() + UrlConstants.getTotalFeeAndHospitalDay, parse, String.class);
+            if (StringUtils.isNotEmpty(s)) {
+                JSONObject object = JSONObject.parseObject(s);
+                String admissionTime = object.getString("admissionTime");
+                String dischargeTime = object.getString("dischargeTime");
+                float totalFee = object.getFloat("total_costs");
+                int in_hospital_days = object.getInteger("in_hospital_days");
+                next.setAdmissionTime(admissionTime);
+                next.setDischargeTime(dischargeTime);
+                next.setTotalCosts(totalFee);
+                next.setInHospitalDays(in_hospital_days);
+                zlfaZhubiaoRepService.save(next);
+            }
+        }
+        resp.setResponseCode(ResponseCode.OK);
+        wirte(response, resp);
+
+    }
+
+    /**
      * 根据疾病名 获取主表的id
      *
      * @param response
@@ -334,7 +371,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             }
         }
         Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
-        logger.info("=============》》》》》》》》》》》》》治疗方案总共{}种",resultList.size());
+        logger.info("=============》》》》》》》》》》》》》治疗方案总共{}种", resultList.size());
         resp.setData(resultList);
         resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);

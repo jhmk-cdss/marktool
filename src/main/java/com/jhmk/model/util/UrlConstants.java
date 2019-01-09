@@ -14,4 +14,5 @@ public class UrlConstants {
 
     //7088 初始工具
     public static final String getDataByPIdAndVId = "/test/rule/getDataByPIdAndVId";
+    public static final String getTotalFeeAndHospitalDay = "/test/rule/getTotalFeeAndHospitalDay";
 }

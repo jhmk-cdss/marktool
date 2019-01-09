@@ -27,6 +27,10 @@ public class ZlfaZhubiao implements Serializable{
     private String dischargeMainDiagnosis;
     private String patientConditionClassification;
     private Date createTime;
+    private Float totalCosts;
+    private Integer inHospitalDays;
+    private String dischargeTime;
+    private String admissionTime;
     private List<ZlfaModel> zlfaModelList;
 
     @Id
@@ -139,6 +143,45 @@ public class ZlfaZhubiao implements Serializable{
         this.createTime = createTime;
     }
 
+    @Basic
+    @Column(name = "total_costs", nullable = true, precision = 0)
+    public Float getTotalCosts() {
+        return totalCosts;
+    }
+
+    public void setTotalCosts(Float totalCosts) {
+        this.totalCosts = totalCosts;
+    }
+
+    @Basic
+    @Column(name = "in_hospital_days", nullable = true)
+    public Integer getInHospitalDays() {
+        return inHospitalDays;
+    }
+
+    public void setInHospitalDays(Integer inHospitalDays) {
+        this.inHospitalDays = inHospitalDays;
+    }
+
+    @Basic
+    @Column(name = "discharge_time", nullable = true, length = 20)
+    public String getDischargeTime() {
+        return dischargeTime;
+    }
+
+    public void setDischargeTime(String dischargeTime) {
+        this.dischargeTime = dischargeTime;
+    }
+
+    @Basic
+    @Column(name = "admission_time", nullable = true, length = 20)
+    public String getAdmissionTime() {
+        return admissionTime;
+    }
+
+    public void setAdmissionTime(String admissionTime) {
+        this.admissionTime = admissionTime;
+    }
     /**
      * 主表id是主键 ZlfaModel表的zhubiaoId是外键
      *
