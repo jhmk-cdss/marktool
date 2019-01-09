@@ -13,8 +13,16 @@ import java.util.*;
 
 public class CollectionCompareBean {
     private Collection<ZlfaCompareBean> columnMetaData;
+    //聚合次数
     private Integer count;
+    //病历id
     private String id;
+    private Float totalFee;
+    private List<Float> totalFeeList;
+    private int inHospitalDay;
+    private List<Integer> inHospitalDayList;
+    private int avgInHospitalDay;
+    private Float avgTotalFee;
     private Set<String> idList = new HashSet<>();
 
     public Collection<ZlfaCompareBean> getColumnMetaData() {
@@ -31,6 +39,54 @@ public class CollectionCompareBean {
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public Float getTotalFee() {
+        return totalFee;
+    }
+
+    public void setTotalFee(Float totalFee) {
+        this.totalFee = totalFee;
+    }
+
+    public List<Float> getTotalFeeList() {
+        return totalFeeList;
+    }
+
+    public void setTotalFeeList(List<Float> totalFeeList) {
+        this.totalFeeList = totalFeeList;
+    }
+
+    public int getInHospitalDay() {
+        return inHospitalDay;
+    }
+
+    public void setInHospitalDay(int inHospitalDay) {
+        this.inHospitalDay = inHospitalDay;
+    }
+
+    public List<Integer> getInHospitalDayList() {
+        return inHospitalDayList;
+    }
+
+    public void setInHospitalDayList(List<Integer> inHospitalDayList) {
+        this.inHospitalDayList = inHospitalDayList;
+    }
+
+    public int getAvgInHospitalDay() {
+        return avgInHospitalDay;
+    }
+
+    public void setAvgInHospitalDay(int avgInHospitalDay) {
+        this.avgInHospitalDay = avgInHospitalDay;
+    }
+
+    public Float getAvgTotalFee() {
+        return avgTotalFee;
+    }
+
+    public void setAvgTotalFee(Float avgTotalFee) {
+        this.avgTotalFee = avgTotalFee;
     }
 
     @Override
@@ -68,7 +124,7 @@ public class CollectionCompareBean {
 
 
     public static void main(String[] args) {
-        List<CollectionCompareBean>list=new ArrayList<>();
+        List<CollectionCompareBean> list = new ArrayList<>();
         CollectionCompareBean collectionCompareBean1 = new CollectionCompareBean();
         collectionCompareBean1.setCount(1);
 

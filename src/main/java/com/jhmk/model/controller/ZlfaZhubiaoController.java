@@ -299,6 +299,9 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
         for (ZlfaZhubiao zhubiao : allByDischargeMainDiagnosis) {
             String patientId = zhubiao.getPatientId();
             String visitId = zhubiao.getVisitId();
+            Float totalCosts = zhubiao.getTotalCosts();
+            Integer inHospitalDays = zhubiao.getInHospitalDays();
+
             //治疗方案
             List<ZlfaCompareBean> zlfaCompareBeanList = new ArrayList<>();
             List<ZlfaModel> zlfaModelList = zhubiao.getZlfaModelList();
@@ -321,6 +324,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                         collectionCompareBean.setColumnMetaData(zlfaCompareBeanList);
                         collectionCompareBean.setId("BJDXDSYY#" + patientId + "#" + visitId);
                         collectionCompareBean.setCount(1);
+                        collectionCompareBean.setTotalFee(totalCosts);
+                        collectionCompareBean.setInHospitalDay(inHospitalDays);
                         list.add(collectionCompareBean);
                         continue lable;
                     }
@@ -356,10 +361,23 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             if (resultList.contains(bean)) {
                 int i = resultList.indexOf(bean);
                 CollectionCompareBean collectionCompareBean = list.get(i);
+                //病历ID集合
                 Set<String> idList = collectionCompareBean.getIdList();
                 String id = bean.getId();
                 idList.add(id);
-                bean.setIdList(idList);
+                collectionCompareBean.setIdList(idList);
+                //住院天数集合
+                List<Integer> inHospitalDayList = collectionCompareBean.getInHospitalDayList();
+                int inHospitalDay = bean.getInHospitalDay();
+                inHospitalDayList.add(inHospitalDay);
+                collectionCompareBean.setInHospitalDayList(inHospitalDayList);
+                //总花费集合
+                List<Float> totalFeeList = collectionCompareBean.getTotalFeeList();
+                Float totalFee = bean.getTotalFee();
+                totalFeeList.add(totalFee);
+                collectionCompareBean.setTotalFeeList(totalFeeList);
+
+
                 collectionCompareBean.setCount(collectionCompareBean.getCount() + 1);
             } else {
                 bean.setCount(1);
@@ -367,8 +385,32 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                 String id = bean.getId();
                 idList.add(id);
                 bean.setIdList(idList);
+
+                List<Float> totalFeeList = new ArrayList<>(1);
+                totalFeeList.add(bean.getTotalFee());
+                bean.setTotalFeeList(totalFeeList);
+                List<Integer> inHospitalDayList = new ArrayList<>(1);
+                inHospitalDayList.add(bean.getInHospitalDay());
+                bean.setInHospitalDayList(inHospitalDayList);
+
                 resultList.add(bean);
             }
+        }
+
+        for (CollectionCompareBean bean : resultList) {
+            List<Integer> inHospitalDayList = bean.getInHospitalDayList();
+            List<Float> totalFeeList = bean.getTotalFeeList();
+            int avgInHospitalDay = 0;
+            float avgTotalFee = 0;
+
+            for (Integer day : inHospitalDayList) {
+                avgInHospitalDay += day;
+            }
+            for (Float fee : totalFeeList) {
+                avgTotalFee += fee;
+            }
+            bean.setAvgTotalFee(avgTotalFee/totalFeeList.size());
+            bean.setAvgInHospitalDay(avgInHospitalDay/inHospitalDayList.size());
         }
         Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
         logger.info("=============》》》》》》》》》》》》》治疗方案总共{}种", resultList.size());
