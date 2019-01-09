@@ -129,6 +129,4 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
         }
         wirte(response, resp);
     }
-
-
 }
