@@ -88,12 +88,15 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
 
     @PostMapping("/returnMainInitData")
     public void returnFirstInitData(HttpServletResponse response, @RequestBody String map) {
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
         Object parse = JSONObject.parse(map);
         logger.info("接受到的数据为：{}", map);
         String s = restTemplate.postForObject(urlPropertiesConfig.getTestToolUrl() + UrlConstants.getDataByPIdAndVId, parse, String.class);
         Rule rule = JSONObject.parseObject(s, Rule.class);
         BiaozhuZhubiao biaozhuZhubiao = jbzdZhubiaoService.rule2JbzdZhubiao(rule);
-        wirte(response, biaozhuZhubiao);
+        resp.setData(biaozhuZhubiao);
+        resp.setResponseCode(ResponseCode.OK);
+        wirte(response, resp);
     }
 
 
