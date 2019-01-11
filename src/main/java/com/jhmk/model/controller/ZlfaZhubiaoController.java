@@ -286,16 +286,18 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             ZlfaOrderModel next = iterator.next();
             String orderItemName = next.getOrderItemName();
             if (drugPurposeMap.containsKey(orderItemName)) {
-                String purpose = drugPurposeMap.get(drugPurposeMap);
+                String purpose = drugPurposeMap.get(orderItemName);
                 //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
                 ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
-                if (StringUtils.isEmpty(purpose)) {
-                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
-                } else {
-                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
-                    zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
+                if (zlfaMianDiagnosisDetail != null) {
+                    if (StringUtils.isEmpty(purpose)) {
+                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
+                    } else {
+                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
+                        zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
+                    }
+                    zlfaMianDiagnosisDetailRepService.save(zlfaMianDiagnosisDetail);
                 }
-                zlfaMianDiagnosisDetailRepService.save(zlfaMianDiagnosisDetail);
             }
 
         }
