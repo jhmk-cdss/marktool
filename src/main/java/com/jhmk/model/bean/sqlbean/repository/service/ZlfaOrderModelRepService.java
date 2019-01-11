@@ -68,5 +68,8 @@ public class ZlfaOrderModelRepService extends BaseRepService<ZlfaOrderModel, Int
         return repository.findAll(pageable);
     }
 
-
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<ZlfaOrderModel> findAllByOrderItemName(String orderItemName) {
+        return repository.findAllByOrderItemName(orderItemName);
+    }
 }

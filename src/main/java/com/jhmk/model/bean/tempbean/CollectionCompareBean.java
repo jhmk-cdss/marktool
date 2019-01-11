@@ -18,9 +18,9 @@ public class CollectionCompareBean {
     //病历id
     private String id;
     private Float totalFee;
-    private List<Float> totalFeeList;
+    private List<Float> totalFeeList=new ArrayList<>();
     private int inHospitalDay;
-    private List<Integer> inHospitalDayList;
+    private List<Integer> inHospitalDayList=new ArrayList<>();
     private int avgInHospitalDay;
     private Float avgTotalFee;
     private Set<String> idList = new HashSet<>();
