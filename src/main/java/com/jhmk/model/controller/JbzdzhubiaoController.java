@@ -11,6 +11,8 @@ import com.jhmk.model.model.AtResponse;
 import com.jhmk.model.model.ResponseCode;
 import com.jhmk.model.service.JbzdZhubiaoService;
 import com.jhmk.model.util.UrlConstants;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.slf4j.Logger;
@@ -41,6 +43,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("jbzdZhubiao")
+@Api("JbzdzhubiaoController相关API")
 public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> {
     private static final Logger logger = LoggerFactory.getLogger(BaseEntityController.class);
 
@@ -71,6 +74,7 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
      * @param map
      */
     @PostMapping("/findOne")
+    @ApiOperation(value = "主键查询", notes = "主键查询")
     public void findOne(HttpServletResponse response, @RequestBody String map) {
         JSONObject object = JSONObject.parseObject(map);
         Integer id = object.getInteger("id");
@@ -97,6 +101,7 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
 //    }
 
     @PostMapping("/returnMainInitData")
+    @ApiOperation(value = "根据ID查询鉴别诊断数据", notes = "根据ID查询鉴别诊断数据")
     public void returnFirstInitData(HttpServletResponse response, @RequestBody String map) {
         AtResponse resp = new AtResponse(System.currentTimeMillis());
         Object parse = JSONObject.parse(map);
