@@ -23,9 +23,9 @@ public class CollectionType2 implements Serializable {
     private String 出院诊断;
     private String 模型结果;
     private String batchno;
+    private String type_name;
     private int  hitNum;
     private int  status;
-
     public String get_id() {
         return _id;
     }
@@ -113,6 +113,14 @@ public class CollectionType2 implements Serializable {
 
     public int getStatus() {
         return status;
+    }
+
+    public String getType_name() {
+        return type_name;
+    }
+
+    public void setType_name(String type_name) {
+        this.type_name = type_name;
     }
 }
 

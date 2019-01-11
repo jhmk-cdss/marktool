@@ -82,7 +82,10 @@ public class HitRateService {
             String model = next.get模型结果();
             String modelResult = StringUtil.str2JsonStr(model);
             JSONArray modelArray = JSONObject.parseArray(modelResult);
-            int i = diseaseService.getKeyIndex(illName, modelArray);
+            int i = -1;
+            if (modelArray !=null&&modelArray.size()>0){
+                i = diseaseService.getKeyIndex(illName, modelArray);
+            }
             countMap.put("all", countMap.get("all") + 1);
             if (i == -1) {
                 //总数量

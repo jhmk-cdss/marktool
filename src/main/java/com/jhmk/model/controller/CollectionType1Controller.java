@@ -166,20 +166,16 @@ public class CollectionType1Controller extends BaseController {
 
         try {
             if ("2".equals(num)) {
-                CollectionType2 collectionType2 = new CollectionType2();
-                BeanUtils.copyProperties(oldBean, collectionType2);
+                CollectionType2 collectionType2  = JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType2.class);
                 collectionType2.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType2RepService.save(collectionType2);
             } else {
-                CollectionType3 collectionType3 = new CollectionType3();
-                BeanUtils.copyProperties(oldBean, collectionType3);
+                CollectionType3 collectionType3 =  JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType3.class);
                 collectionType3.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType3RepService.save(collectionType3);
             }
             //逻辑删除 修改状态
-            oldBean.setStatus(2);
-            collectionType1RepService.save(oldBean);
-//            collectionType1RepService.delete(id);
+            collectionType1RepService.delete(id);
             resp.setResponseCode(ResponseCode.OK);
         } catch (Exception e) {
             resp.setResponseCode(ResponseCode.INERERROR);

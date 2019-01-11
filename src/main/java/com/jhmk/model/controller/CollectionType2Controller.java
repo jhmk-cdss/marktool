@@ -162,18 +162,15 @@ public class CollectionType2Controller extends BaseController {
 
         try {
             if ("1".equals(num)) {
-                CollectionType1 collectionType1 = new CollectionType1();
+                CollectionType1 collectionType1 = JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType1.class);
                 collectionType1.setBatchno(DateFormatUtil.getStrNowDate());
-                BeanUtils.copyProperties(oldBean, oldBean);
                 collectionType1RepService.save(collectionType1);
             } else {
-                CollectionType3 collectionType3 = new CollectionType3();
-                BeanUtils.copyProperties(oldBean, collectionType3);
+                CollectionType3 collectionType3 = JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType3.class);
                 collectionType3.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType3RepService.save(collectionType3);
             }
-            oldBean.setStatus(2);
-            collectionType2RepService.save(oldBean);
+            collectionType2RepService.delete(id);
             resp.setResponseCode(ResponseCode.OK);
         } catch (Exception e) {
             resp.setResponseCode(ResponseCode.INERERROR);
@@ -195,6 +192,7 @@ public class CollectionType2Controller extends BaseController {
         resp.setData(params);
         wirte(response, resp);
     }
+
     @PostMapping(value = "/findById")
     public void findById(HttpServletResponse response, @RequestBody String map) {
         JSONObject object = JSONObject.parseObject(map);

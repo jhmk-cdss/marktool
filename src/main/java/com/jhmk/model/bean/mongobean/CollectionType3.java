@@ -23,6 +23,7 @@ public class CollectionType3 implements Serializable {
     private String 模型结果;
     private String batchno;
     private String 异常原因;
+    private String type_name;
     private int status;
 
     public String get_id() {
@@ -111,6 +112,14 @@ public class CollectionType3 implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getType_name() {
+        return type_name;
+    }
+
+    public void setType_name(String type_name) {
+        this.type_name = type_name;
     }
 }
 
