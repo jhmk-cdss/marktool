@@ -44,6 +44,7 @@ public class CollectionType3Controller extends BaseController {
     CollectionType3RepService collectionType3RepService;
     @Autowired
     HitRateService hitRateService;
+
     @PostMapping(value = "/add")
     public void add(HttpServletResponse response, @RequestBody String map) {
         AtResponse resp = new AtResponse(System.currentTimeMillis());
@@ -105,17 +106,13 @@ public class CollectionType3Controller extends BaseController {
         String id = jsonObject.getString("_id");
         String num = jsonObject.getString("num");
         CollectionType3 oldBean = collectionType3RepService.findBy_id(id);
-
         try {
             if ("1".equals(num)) {
-                CollectionType1 collectionType1 = new CollectionType1();
-                BeanUtils.copyProperties(oldBean, collectionType1);
+                CollectionType1 collectionType1 = JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType1.class);
                 collectionType1.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType1RepService.save(collectionType1);
-            }
-            if ("2".equals(num)) {
-                CollectionType2 collectionType2 = new CollectionType2();
-                BeanUtils.copyProperties(oldBean, collectionType2);
+            } else if ("2".equals(num)) {
+                CollectionType2 collectionType2 = JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType2.class);
                 collectionType2.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType2RepService.save(collectionType2);
             } else {
@@ -126,6 +123,7 @@ public class CollectionType3Controller extends BaseController {
             collectionType3RepService.delete(id);
             resp.setResponseCode(ResponseCode.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setResponseCode(ResponseCode.INERERROR);
         }
         wirte(response, resp);

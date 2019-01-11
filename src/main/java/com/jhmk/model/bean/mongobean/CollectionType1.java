@@ -22,6 +22,7 @@ public class CollectionType1 implements Serializable {
     private String 出院诊断;
     private String 模型结果;
     private String batchno;
+    private String type_name;
     private int hitNum;
     private int status;//状态 2 删除 无或者1 正常
 
@@ -111,6 +112,14 @@ public class CollectionType1 implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getType_name() {
+        return type_name;
+    }
+
+    public void setType_name(String type_name) {
+        this.type_name = type_name;
     }
 }
 

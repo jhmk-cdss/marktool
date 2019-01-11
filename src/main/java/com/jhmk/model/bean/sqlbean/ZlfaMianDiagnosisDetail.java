@@ -21,6 +21,7 @@ public class ZlfaMianDiagnosisDetail implements Serializable {
     private int id;
     private String treatmentGoals;
     private String medicineTreatment;
+    //2 表示不纳入治疗方案
     private int notIncludedOrderIndicator;
     @JSONField(serialize=false)
     private  ZlfaModel zlfaModel;

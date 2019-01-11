@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.jhmk.model.base.BaseEntityController;
 import com.jhmk.model.bean.rule.Rule;
 import com.jhmk.model.bean.sqlbean.*;
+import com.jhmk.model.bean.sqlbean.repository.service.ZlfaMianDiagnosisDetailRepService;
+import com.jhmk.model.bean.sqlbean.repository.service.ZlfaOrderModelRepService;
 import com.jhmk.model.bean.sqlbean.repository.service.ZlfaZhubiaoRepService;
 import com.jhmk.model.bean.sqlbean.repository.service.ZlfaUpdateAddModelDetailRepService;
 import com.jhmk.model.bean.tempbean.CollectionCompareBean;
@@ -30,6 +32,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+import static com.jhmk.model.service.InitDataService.drugPurposeMap;
+
 /**
  * @author ziyu.zhou
  * @date 2018/12/13 19:47
@@ -41,6 +45,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     @Autowired
     ZlfaZhubiaoService zlfaZhubiaoService;
     @Autowired
+    ZlfaOrderModelRepService zlfaOrderModelRepService;
+    @Autowired
     ZlfaZhubiaoRepService zlfaZhubiaoRepService;
     @Autowired
     ZlfaUpdateAddModelDetailRepService zlfaUpdateAddModelDetailRepService;
@@ -48,6 +54,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     RestTemplate restTemplate;
     @Autowired
     UrlPropertiesConfig urlPropertiesConfig;
+    @Autowired
+    ZlfaMianDiagnosisDetailRepService zlfaMianDiagnosisDetailRepService;
     @Autowired
     ZlfaMianDiagnosisDetailService zlfaMianDiagnosisDetailService;
 
@@ -264,6 +272,39 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     }
 
     /**
+     * 添加用药治疗目的
+     *
+     * @param response
+     * @param map
+     */
+    @GetMapping("/addDrugPurpose")
+    public void addDrugPurpose(HttpServletResponse response, @RequestBody(required = false) String map) {
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
+        Iterable<ZlfaOrderModel> all = zlfaOrderModelRepService.findAll();
+        Iterator<ZlfaOrderModel> iterator = all.iterator();
+        while (iterator.hasNext()) {
+            ZlfaOrderModel next = iterator.next();
+            String orderItemName = next.getOrderItemName();
+            if (drugPurposeMap.containsKey(orderItemName)) {
+                String purpose = drugPurposeMap.get(drugPurposeMap);
+                //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
+                ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
+                if (StringUtils.isEmpty(purpose)) {
+                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
+                } else {
+                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
+                    zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
+                }
+                zlfaMianDiagnosisDetailRepService.save(zlfaMianDiagnosisDetail);
+            }
+
+        }
+        resp.setResponseCode(ResponseCode.OK);
+        wirte(response, resp);
+
+    }
+
+    /**
      * 根据疾病名 获取主表的id
      *
      * @param response
@@ -311,14 +352,17 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                     if ("1".equals(zlfaModel.getTreatmentPlanNum())) {
                         List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = zlfaModel.getZlfaMianDiagnosisDetailList();
                         for (ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail : zlfaMianDiagnosisDetailList) {
-                            ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
-                            zlfaCompareBean.setMedicineTreatment(zlfaMianDiagnosisDetail.getMedicineTreatment());
-                            zlfaCompareBean.setTreatmentGoals(zlfaMianDiagnosisDetail.getTreatmentGoals());
-                            ZlfaOrderModel zlfaOrderModel = zlfaMianDiagnosisDetail.getZlfaOrderModel();
-                            if (zlfaOrderModel != null) {
-                                zlfaCompareBean.setOrderItemName(zlfaOrderModel.getOrderItemName());
+                            //1 代表治疗方案用药 2 代表无用的药
+                            if (1 == zlfaMianDiagnosisDetail.getNotIncludedOrderIndicator()) {
+                                ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
+                                zlfaCompareBean.setMedicineTreatment(zlfaMianDiagnosisDetail.getMedicineTreatment());
+                                zlfaCompareBean.setTreatmentGoals(zlfaMianDiagnosisDetail.getTreatmentGoals());
+                                ZlfaOrderModel zlfaOrderModel = zlfaMianDiagnosisDetail.getZlfaOrderModel();
+                                if (zlfaOrderModel != null) {
+                                    zlfaCompareBean.setOrderItemName(zlfaOrderModel.getOrderItemName());
+                                }
+                                zlfaCompareBeanList.add(zlfaCompareBean);
                             }
-                            zlfaCompareBeanList.add(zlfaCompareBean);
                         }
                         CollectionCompareBean collectionCompareBean = new CollectionCompareBean();
                         collectionCompareBean.setColumnMetaData(zlfaCompareBeanList);
@@ -409,8 +453,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             for (Float fee : totalFeeList) {
                 avgTotalFee += fee;
             }
-            bean.setAvgTotalFee(avgTotalFee/totalFeeList.size());
-            bean.setAvgInHospitalDay(avgInHospitalDay/inHospitalDayList.size());
+            bean.setAvgTotalFee(avgTotalFee / totalFeeList.size());
+            bean.setAvgInHospitalDay(avgInHospitalDay / inHospitalDayList.size());
         }
         Collections.sort(resultList, CompareUtil.createComparator(-1, "count"));
         logger.info("=============》》》》》》》》》》》》》治疗方案总共{}种", resultList.size());

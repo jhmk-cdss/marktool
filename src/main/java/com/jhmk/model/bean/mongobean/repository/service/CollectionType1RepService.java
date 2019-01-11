@@ -198,9 +198,11 @@ public class CollectionType1RepService {
             String model = next.get模型结果();
             String modelResult = StringUtil.str2JsonStr(model);
             JSONArray modelArray = JSONObject.parseArray(modelResult);
-            int i = diseaseService.getKeyIndex(illName, modelArray);
-            next.setHitNum(i);
-            next.set模型结果(modelResult);
+            if (modelArray != null && modelArray.size() > 0) {
+                int i = diseaseService.getKeyIndex(illName, modelArray);
+                next.setHitNum(i);
+                next.set模型结果(modelResult);
+            }
         }
         return content;
     }

@@ -27,6 +27,7 @@ public class InitDataService {
      * 医嘱方案
      */
     public static Map<String, ZlfaMianDiagnosisDetail> yizhuMap = new HashMap<>();
+    public static Map<String, String> drugPurposeMap = new HashMap<>();
 
     /**
      * 初始化数据
@@ -34,6 +35,7 @@ public class InitDataService {
     @PostConstruct
     public void initData() {
 //        initYizhuMap();
+        readZlfaPurpose();
     }
 
     /**
@@ -59,12 +61,18 @@ public class InitDataService {
      * 医嘱 对应 治疗方案目的  初始化
      */
     public void readZlfaPurpose() {
-        Set<String> strListByFileNmae = ReadResourceUtil.getStrListByFileNmae("purpose.txt");
-        for (String str:strListByFileNmae) {
-            String[] split = str.trim().split(",");
-
+        Set<String> strListByFileNmae = ReadResourceUtil.getStrListByFileNmae("tempfile/drugPurpose");
+        for (String str : strListByFileNmae) {
+            String[] split = str.trim().split("&");
+            String drug = split[0];
+            if (split.length == 2) {
+                String purpose = split[1];
+                drugPurposeMap.put(drug, purpose);
+            } else {
+                drugPurposeMap.put(drug, null);
+            }
         }
-        
+
     }
 
 }

@@ -166,13 +166,11 @@ public class CollectionType1Controller extends BaseController {
 
         try {
             if ("2".equals(num)) {
-                CollectionType2 collectionType2 = new CollectionType2();
-                BeanUtils.copyProperties(oldBean, collectionType2);
+                CollectionType2 collectionType2  = JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType2.class);
                 collectionType2.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType2RepService.save(collectionType2);
             } else {
-                CollectionType3 collectionType3 = new CollectionType3();
-                BeanUtils.copyProperties(oldBean, collectionType3);
+                CollectionType3 collectionType3 =  JSONObject.parseObject(JSONObject.toJSONString(oldBean), CollectionType3.class);
                 collectionType3.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType3RepService.save(collectionType3);
             }
