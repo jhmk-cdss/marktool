@@ -177,9 +177,7 @@ public class CollectionType1Controller extends BaseController {
                 collectionType3RepService.save(collectionType3);
             }
             //逻辑删除 修改状态
-            oldBean.setStatus(2);
-            collectionType1RepService.save(oldBean);
-//            collectionType1RepService.delete(id);
+            collectionType1RepService.delete(id);
             resp.setResponseCode(ResponseCode.OK);
         } catch (Exception e) {
             resp.setResponseCode(ResponseCode.INERERROR);

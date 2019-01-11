@@ -172,8 +172,7 @@ public class CollectionType2Controller extends BaseController {
                 collectionType3.setBatchno(DateFormatUtil.getStrNowDate());
                 collectionType3RepService.save(collectionType3);
             }
-            oldBean.setStatus(2);
-            collectionType2RepService.save(oldBean);
+            collectionType1RepService.delete(id);
             resp.setResponseCode(ResponseCode.OK);
         } catch (Exception e) {
             resp.setResponseCode(ResponseCode.INERERROR);
