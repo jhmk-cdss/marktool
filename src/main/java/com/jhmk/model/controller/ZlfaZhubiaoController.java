@@ -323,7 +323,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             String purpose = drugPurposeMap.get(illName);
             List<ZlfaOrderModel> cutList;
             //每200个 处理一次 加入线程
-            int threadNum = allByOrderItemName.size() / disposeSize == 0 ?
+            int threadNum = allByOrderItemName.size() % disposeSize == 0 ?
                     allByOrderItemName.size() / disposeSize : allByOrderItemName.size() / disposeSize + 1;
             for (int x = 0; x < threadNum; x++) {
                 if (x == threadNum - 1) {
