@@ -403,16 +403,16 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             Integer inHospitalDays = zhubiao.getInHospitalDays();
 
             //治疗方案
-            List<ZlfaCompareBean> zlfaCompareBeanList = new ArrayList<>();
+            Set<ZlfaCompareBean> zlfaCompareBeanList = new HashSet<>();
             List<ZlfaModel> zlfaModelList = zhubiao.getZlfaModelList();
             if (zlfaModelList != null && zlfaModelList.size() > 0) {
                 for (ZlfaModel zlfaModel : zlfaModelList) {
-
+                    //第一天的治疗方案
                     if ("1".equals(zlfaModel.getTreatmentPlanNum())) {
                         List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = zlfaModel.getZlfaMianDiagnosisDetailList();
                         for (ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail : zlfaMianDiagnosisDetailList) {
                             //1 代表治疗方案用药 2 代表无用的药
-                            if (1 == zlfaMianDiagnosisDetail.getNotIncludedOrderIndicator()) {
+                            if (2 != zlfaMianDiagnosisDetail.getNotIncludedOrderIndicator()) {
                                 ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
                                 zlfaCompareBean.setMedicineTreatment(zlfaMianDiagnosisDetail.getMedicineTreatment());
                                 zlfaCompareBean.setTreatmentGoals(zlfaMianDiagnosisDetail.getTreatmentGoals());

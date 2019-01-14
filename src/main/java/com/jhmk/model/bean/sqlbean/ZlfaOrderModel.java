@@ -462,4 +462,21 @@ public class ZlfaOrderModel implements Serializable {
     public void setZlfaMianDiagnosisDetail(ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail) {
         this.zlfaMianDiagnosisDetail = zlfaMianDiagnosisDetail;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ZlfaOrderModel that = (ZlfaOrderModel) o;
+        return Objects.equals(orderItemName, that.orderItemName) &&
+                Objects.equals(patientId, that.patientId) &&
+                Objects.equals(visitId, that.visitId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(orderItemName, patientId, visitId);
+    }
 }
