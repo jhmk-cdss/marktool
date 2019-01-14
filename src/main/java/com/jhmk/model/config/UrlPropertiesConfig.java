@@ -16,8 +16,11 @@ public class UrlPropertiesConfig {
     private String cdssurl;
     private String pageurl;
     private String participleurl;
-    private String earlywarnurl;
-    private String pagetesturl;
+    private String esurl;
+    //知识库
+    private String knowbaseurl;
+    //知识库页面地址
+    private String knowbasePageurl;
     private String testToolUrl;
 
     public String getCdssurl() {
@@ -44,20 +47,28 @@ public class UrlPropertiesConfig {
         this.participleurl = participleurl;
     }
 
-    public String getEarlywarnurl() {
-        return earlywarnurl;
+    public String getEsurl() {
+        return esurl;
     }
 
-    public void setEarlywarnurl(String earlywarnurl) {
-        this.earlywarnurl = earlywarnurl;
+    public void setEsurl(String esurl) {
+        this.esurl = esurl;
     }
 
-    public String getPagetesturl() {
-        return pagetesturl;
+    public String getKnowbaseurl() {
+        return knowbaseurl;
     }
 
-    public void setPagetesturl(String pagetesturl) {
-        this.pagetesturl = pagetesturl;
+    public void setKnowbaseurl(String knowbaseurl) {
+        this.knowbaseurl = knowbaseurl;
+    }
+
+    public String getKnowbasePageurl() {
+        return knowbasePageurl;
+    }
+
+    public void setKnowbasePageurl(String knowbasePageurl) {
+        this.knowbasePageurl = knowbasePageurl;
     }
 
     public String getTestToolUrl() {
