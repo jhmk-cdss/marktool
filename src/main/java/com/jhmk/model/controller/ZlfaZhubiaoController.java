@@ -284,9 +284,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     public void addDrugPurpose(HttpServletResponse response) {
         AtResponse resp = new AtResponse(System.currentTimeMillis());
         Set<String> set = drugPurposeMap.keySet();
-        List<ZlfaMianDiagnosisDetail> saveList = null;
         for (String illName : set) {
-            saveList = new ArrayList<>();
+            List<ZlfaMianDiagnosisDetail> saveList = new ArrayList<>();
             List<ZlfaOrderModel> allByOrderItemName = zlfaOrderModelRepService.findAllByOrderItemName(illName);
             String purpose = drugPurposeMap.get(illName);
             //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
@@ -427,11 +426,11 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                                         String standardFromAlias = documentUtil.getStandardFromAlias(orderItemName);
                                         if (StringUtils.isNotEmpty(standardFromAlias)) {
                                             zlfaCompareBean.setOrderItemName(standardFromAlias);
-                                        }else {
+                                        } else {
                                             zlfaCompareBean.setOrderItemName(orderItemName);
                                         }
                                     }
-                                }else {
+                                } else {
                                     zlfaCompareBean.setOrderItemName("");
                                 }
                                 zlfaCompareBeanList.add(zlfaCompareBean);
