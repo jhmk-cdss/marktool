@@ -16,7 +16,8 @@ public class ThreadUtil {
             synchronized (ThreadUtil.class) {
                 if (instance == null) {
                     int cpuNum = Runtime.getRuntime().availableProcessors();//获取处理器储量
-                    int threadNum = cpuNum * 2 + 1;//根据cpu数量，计算出合理的线程并发数
+//                    int threadNum = cpuNum * 2 + 1;//根据cpu数量，计算出合理的线程并发数
+                    int threadNum = cpuNum+1;//根据cpu数量，计算出合理的线程并发数
                     instance = new ThreadPool(threadNum - 1, threadNum, Integer.MAX_VALUE);
                 }
             }

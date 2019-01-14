@@ -33,4 +33,6 @@ public interface ZlfaMianDiagnosisDetailRepository extends PagingAndSortingRepos
 //    @Query("select  z from  ZlfaMianDiagnosisDetail z where z.medicineTreatment not null")
 //    List<ZlfaMianDiagnosisDetail> findAllByMedicineTreatmentNotNull();
 
+
+
 }

@@ -24,6 +24,8 @@ public class Rule implements Serializable {
     private String patient_id;
     private String visit_id;
     private String pageSource;
+    private float total_costs;
+
     //入院时间
     private String admission_time;
     //出院时间
@@ -275,6 +277,14 @@ public class Rule implements Serializable {
 
     public List<Shouyeshoushu> getShouyeshoushu() {
         return shouyeshoushu;
+    }
+
+    public float getTotal_costs() {
+        return total_costs;
+    }
+
+    public void setTotal_costs(float total_costs) {
+        this.total_costs = total_costs;
     }
 
     public static Rule fill(JSONObject jo) {

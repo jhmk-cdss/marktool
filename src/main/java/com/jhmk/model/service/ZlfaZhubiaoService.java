@@ -277,6 +277,10 @@ public class ZlfaZhubiaoService {
             zhubiao.setDischargeMainDiagnosis(cyzd);
             zhubiao.setPatientId(patientId);
             zhubiao.setVisitId(visitId);
+            zhubiao.setAdmissionTime(binganshouye.getAdmission_time());
+            zhubiao.setDischargeTime(binganshouye.getDischarge_time());
+            zhubiao.setInHospitalDays(rule.getHospitalDay());
+            zhubiao.setTotalCosts(rule.getTotal_costs());
             //患者病情分类
 //            zhubiao.setPatientConditionClassification();
         }

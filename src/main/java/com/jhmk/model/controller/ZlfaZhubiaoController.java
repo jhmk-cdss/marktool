@@ -17,6 +17,7 @@ import com.jhmk.model.model.ResponseCode;
 import com.jhmk.model.service.ZlfaMianDiagnosisDetailService;
 import com.jhmk.model.service.ZlfaZhubiaoService;
 import com.jhmk.model.util.CompareUtil;
+import com.jhmk.model.util.ThreadUtil;
 import com.jhmk.model.util.UrlConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -275,13 +276,14 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
      * 添加用药治疗目的
      *
      * @param response
-     * @param map
      */
     @GetMapping("/addDrugPurpose")
-    public void addDrugPurpose(HttpServletResponse response, @RequestBody(required = false) String map) {
+    public void addDrugPurpose(HttpServletResponse response) {
         AtResponse resp = new AtResponse(System.currentTimeMillis());
         Set<String> set = drugPurposeMap.keySet();
+        List<ZlfaMianDiagnosisDetail> saveList = null;
         for (String illName : set) {
+            saveList = new ArrayList<>();
             List<ZlfaOrderModel> allByOrderItemName = zlfaOrderModelRepService.findAllByOrderItemName(illName);
             String purpose = drugPurposeMap.get(illName);
             //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
@@ -297,15 +299,68 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                             zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
                             zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
                         }
-                        zlfaMianDiagnosisDetailRepService.save(zlfaMianDiagnosisDetail);
+                        saveList.add(zlfaMianDiagnosisDetail);
                     }
                 }
             }
-
+            zlfaMianDiagnosisDetailRepService.save(saveList);
         }
         resp.setResponseCode(ResponseCode.OK);
         wirte(response, resp);
 
+    }
+
+    @GetMapping("/addDrugPurposeByThread")
+    public void addDrugPurposeByThread(HttpServletResponse response) {
+        ThreadUtil.ThreadPool instance = ThreadUtil.getInstance();
+        Runnable task = null;
+        //每个线程处理数量
+        int disposeSize = 200;
+        AtResponse resp = new AtResponse(System.currentTimeMillis());
+        Set<String> set = drugPurposeMap.keySet();
+        for (String illName : set) {
+            List<ZlfaOrderModel> allByOrderItemName = zlfaOrderModelRepService.findAllByOrderItemName(illName);
+            String purpose = drugPurposeMap.get(illName);
+            List<ZlfaOrderModel> cutList;
+            //每200个 处理一次 加入线程
+            int threadNum = allByOrderItemName.size() / disposeSize == 0 ?
+                    allByOrderItemName.size() / disposeSize : allByOrderItemName.size() / disposeSize + 1;
+            for (int x = 0; x < threadNum; x++) {
+                if (x == threadNum - 1) {
+                    cutList = allByOrderItemName.subList(disposeSize * x, allByOrderItemName.size());
+                } else {
+                    cutList = allByOrderItemName.subList(disposeSize * x, disposeSize * (x + 1));
+                }
+                final List<ZlfaOrderModel> listStr = cutList;
+                task = new Runnable() {
+                    @Override
+                    public void run() {
+                        //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
+                        List<ZlfaMianDiagnosisDetail> saveList = new ArrayList<>();
+                        for (ZlfaOrderModel next : listStr) {
+                            String orderItemName = next.getOrderItemName();
+                            if (drugPurposeMap.containsKey(orderItemName)) {
+                                //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
+                                ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
+                                if (zlfaMianDiagnosisDetail != null) {
+                                    if (StringUtils.isEmpty(purpose)) {
+                                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
+                                    } else {
+                                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
+                                        zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
+                                    }
+                                    saveList.add(zlfaMianDiagnosisDetail);
+                                }
+                            }
+                        }
+                        zlfaMianDiagnosisDetailRepService.save(saveList);
+                    }
+                };
+                instance.execute(task);
+            }
+        }
+        resp.setResponseCode(ResponseCode.OK);
+        wirte(response, resp);
     }
 
     /**

@@ -14,4 +14,6 @@ import java.util.List;
 
 public interface ZlfaOrderModelRepository extends PagingAndSortingRepository<ZlfaOrderModel, Integer>, JpaSpecificationExecutor<ZlfaOrderModel> {
     List<ZlfaOrderModel>findAllByOrderItemName(String orderItemName);
+
+
 }
