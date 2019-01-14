@@ -431,6 +431,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                                             zlfaCompareBean.setOrderItemName(orderItemName);
                                         }
                                     }
+                                }else {
+                                    zlfaCompareBean.setOrderItemName("");
                                 }
                                 zlfaCompareBeanList.add(zlfaCompareBean);
                             }
