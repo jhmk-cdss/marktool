@@ -17,6 +17,7 @@ import com.jhmk.model.model.ResponseCode;
 import com.jhmk.model.service.ZlfaMianDiagnosisDetailService;
 import com.jhmk.model.service.ZlfaZhubiaoService;
 import com.jhmk.model.util.CompareUtil;
+import com.jhmk.model.util.DocumentUtil;
 import com.jhmk.model.util.ThreadUtil;
 import com.jhmk.model.util.UrlConstants;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +58,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     UrlPropertiesConfig urlPropertiesConfig;
     @Autowired
     ZlfaMianDiagnosisDetailRepService zlfaMianDiagnosisDetailRepService;
+    @Autowired
+    DocumentUtil documentUtil;
     @Autowired
     ZlfaMianDiagnosisDetailService zlfaMianDiagnosisDetailService;
 
@@ -418,7 +421,16 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                                 zlfaCompareBean.setTreatmentGoals(zlfaMianDiagnosisDetail.getTreatmentGoals());
                                 ZlfaOrderModel zlfaOrderModel = zlfaMianDiagnosisDetail.getZlfaOrderModel();
                                 if (zlfaOrderModel != null) {
-                                    zlfaCompareBean.setOrderItemName(zlfaOrderModel.getOrderItemName());
+                                    String orderItemName = zlfaOrderModel.getOrderItemName();
+                                    if (StringUtils.isNotEmpty(orderItemName)) {
+                                        //获取标准名
+                                        String standardFromAlias = documentUtil.getStandardFromAlias(orderItemName);
+                                        if (StringUtils.isNotEmpty(standardFromAlias)) {
+                                            zlfaCompareBean.setOrderItemName(standardFromAlias);
+                                        }else {
+                                            zlfaCompareBean.setOrderItemName(orderItemName);
+                                        }
+                                    }
                                 }
                                 zlfaCompareBeanList.add(zlfaCompareBean);
                             }
