@@ -340,21 +340,22 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                         //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
                         List<ZlfaMianDiagnosisDetail> saveList = new ArrayList<>();
                         for (ZlfaOrderModel next : listStr) {
-                            String orderItemName = next.getOrderItemName();
-                            if (drugPurposeMap.containsKey(orderItemName)) {
-                                //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
-                                ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
-                                if (zlfaMianDiagnosisDetail != null) {
-                                    if (StringUtils.isEmpty(purpose)) {
-                                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
-                                    } else {
-                                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
-                                        zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
-                                    }
-                                    saveList.add(zlfaMianDiagnosisDetail);
+//                            String orderItemName = next.getOrderItemName();
+//                            if (drugPurposeMap.containsKey(orderItemName)) {
+                            //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
+                            ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
+                            if (zlfaMianDiagnosisDetail != null) {
+                                if (StringUtils.isEmpty(purpose)) {
+                                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
+                                } else {
+                                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
+                                    zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
                                 }
+                                saveList.add(zlfaMianDiagnosisDetail);
                             }
+//                            }
                         }
+                        logger.info("=============》》》》》》》》》》保存疾病名为{},数量为：{}", illName, saveList.size());
                         zlfaMianDiagnosisDetailRepService.save(saveList);
                     }
                 };
