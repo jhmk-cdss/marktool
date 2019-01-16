@@ -17,6 +17,7 @@ import com.jhmk.model.model.ResponseCode;
 import com.jhmk.model.service.ZlfaMianDiagnosisDetailService;
 import com.jhmk.model.service.ZlfaZhubiaoService;
 import com.jhmk.model.util.CompareUtil;
+import com.jhmk.model.util.DocumentUtil;
 import com.jhmk.model.util.ThreadUtil;
 import com.jhmk.model.util.UrlConstants;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +58,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     UrlPropertiesConfig urlPropertiesConfig;
     @Autowired
     ZlfaMianDiagnosisDetailRepService zlfaMianDiagnosisDetailRepService;
+    @Autowired
+    DocumentUtil documentUtil;
     @Autowired
     ZlfaMianDiagnosisDetailService zlfaMianDiagnosisDetailService;
 
@@ -281,9 +284,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
     public void addDrugPurpose(HttpServletResponse response) {
         AtResponse resp = new AtResponse(System.currentTimeMillis());
         Set<String> set = drugPurposeMap.keySet();
-        List<ZlfaMianDiagnosisDetail> saveList = null;
         for (String illName : set) {
-            saveList = new ArrayList<>();
+            List<ZlfaMianDiagnosisDetail> saveList = new ArrayList<>();
             List<ZlfaOrderModel> allByOrderItemName = zlfaOrderModelRepService.findAllByOrderItemName(illName);
             String purpose = drugPurposeMap.get(illName);
             //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
@@ -323,7 +325,7 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             String purpose = drugPurposeMap.get(illName);
             List<ZlfaOrderModel> cutList;
             //每200个 处理一次 加入线程
-            int threadNum = allByOrderItemName.size() / disposeSize == 0 ?
+            int threadNum = allByOrderItemName.size() % disposeSize == 0 ?
                     allByOrderItemName.size() / disposeSize : allByOrderItemName.size() / disposeSize + 1;
             for (int x = 0; x < threadNum; x++) {
                 if (x == threadNum - 1) {
@@ -338,21 +340,22 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                         //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
                         List<ZlfaMianDiagnosisDetail> saveList = new ArrayList<>();
                         for (ZlfaOrderModel next : listStr) {
-                            String orderItemName = next.getOrderItemName();
-                            if (drugPurposeMap.containsKey(orderItemName)) {
-                                //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
-                                ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
-                                if (zlfaMianDiagnosisDetail != null) {
-                                    if (StringUtils.isEmpty(purpose)) {
-                                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
-                                    } else {
-                                        zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
-                                        zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
-                                    }
-                                    saveList.add(zlfaMianDiagnosisDetail);
+//                            String orderItemName = next.getOrderItemName();
+//                            if (drugPurposeMap.containsKey(orderItemName)) {
+                            //如果是空  表示此药品不纳入 治疗方案 ，修改状态字段
+                            ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail = next.getZlfaMianDiagnosisDetail();
+                            if (zlfaMianDiagnosisDetail != null) {
+                                if (StringUtils.isEmpty(purpose)) {
+                                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(2);
+                                } else {
+                                    zlfaMianDiagnosisDetail.setNotIncludedOrderIndicator(1);
+                                    zlfaMianDiagnosisDetail.setTreatmentGoals(purpose);
                                 }
+                                saveList.add(zlfaMianDiagnosisDetail);
                             }
+//                            }
                         }
+                        logger.info("=============》》》》》》》》》》保存疾病名为{},数量为：{}", illName, saveList.size());
                         zlfaMianDiagnosisDetailRepService.save(saveList);
                     }
                 };
@@ -403,22 +406,33 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             Integer inHospitalDays = zhubiao.getInHospitalDays();
 
             //治疗方案
-            List<ZlfaCompareBean> zlfaCompareBeanList = new ArrayList<>();
+            Set<ZlfaCompareBean> zlfaCompareBeanList = new HashSet<>();
             List<ZlfaModel> zlfaModelList = zhubiao.getZlfaModelList();
             if (zlfaModelList != null && zlfaModelList.size() > 0) {
                 for (ZlfaModel zlfaModel : zlfaModelList) {
-
+                    //第一天的治疗方案
                     if ("1".equals(zlfaModel.getTreatmentPlanNum())) {
                         List<ZlfaMianDiagnosisDetail> zlfaMianDiagnosisDetailList = zlfaModel.getZlfaMianDiagnosisDetailList();
                         for (ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail : zlfaMianDiagnosisDetailList) {
                             //1 代表治疗方案用药 2 代表无用的药
-                            if (1 == zlfaMianDiagnosisDetail.getNotIncludedOrderIndicator()) {
+                            if (2 != zlfaMianDiagnosisDetail.getNotIncludedOrderIndicator()) {
                                 ZlfaCompareBean zlfaCompareBean = new ZlfaCompareBean();
                                 zlfaCompareBean.setMedicineTreatment(zlfaMianDiagnosisDetail.getMedicineTreatment());
                                 zlfaCompareBean.setTreatmentGoals(zlfaMianDiagnosisDetail.getTreatmentGoals());
                                 ZlfaOrderModel zlfaOrderModel = zlfaMianDiagnosisDetail.getZlfaOrderModel();
                                 if (zlfaOrderModel != null) {
-                                    zlfaCompareBean.setOrderItemName(zlfaOrderModel.getOrderItemName());
+                                    String orderItemName = zlfaOrderModel.getOrderItemName();
+                                    if (StringUtils.isNotEmpty(orderItemName)) {
+                                        //获取标准名
+                                        String standardFromAlias = documentUtil.getStandardFromAlias(orderItemName);
+                                        if (StringUtils.isNotEmpty(standardFromAlias)) {
+                                            zlfaCompareBean.setOrderItemName(standardFromAlias);
+                                        } else {
+                                            zlfaCompareBean.setOrderItemName(orderItemName);
+                                        }
+                                    }
+                                } else {
+                                    zlfaCompareBean.setOrderItemName("");
                                 }
                                 zlfaCompareBeanList.add(zlfaCompareBean);
                             }

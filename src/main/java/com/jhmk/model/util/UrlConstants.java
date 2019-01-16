@@ -15,4 +15,17 @@ public class UrlConstants {
     //7088 初始工具
     public static final String getDataByPIdAndVId = "/test/rule/getDataByPIdAndVId";
     public static final String getTotalFeeAndHospitalDay = "/test/rule/getTotalFeeAndHospitalDay";
+
+
+
+    //知识库接口
+
+    //  获取一个词的同义词列表
+    public static final String sameWord = "/med/cdss/sameWord.json";
+    //获取一个词的标准名称
+    public static final String standardFromAlias = "/med/cdss/standardFromAlias.json";
+    public static final String getAllChildDisease = "/med/cdss/getAllChildDisease.json";
+
+
+
 }

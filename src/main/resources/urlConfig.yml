@@ -1,23 +1,17 @@
 #可配置文件
-#3yuan
+
 #urlConfig:
 #cdss规则匹配接口
 #cdssurl: http://172.16.254.163:8010
-#cdssurl: http://192.168.132.7:8010
-#cdssurl: http://192.168.132.7:8010
-#earlywarnurl: http://192.168.13277:8111
-#pagetesturl: http://192.168.132.7:8112
-#testToolUrl: http://192.168.132.7:7088
+#cdssurl: http://192.168.8.33:8011
+cdssurl: http://192.168.8.20:8011
+knowbaseurl: http://192.168.8.32:8889
 #诊疗计划
-#pageurl: http://192.168.8.20:8
+pageurl: http://192.168.8.20:8800
 #pageurl: http://172.16.254.163:8800
 #   分词接口
-#participleurl: http://172.16.254.163:8802
-#participleurl: http://172.16.254.163:8802
+participleurl: http://172.16.254.163:8802
+participleurl: http://172.16.254.163:8802
+knowbasePageurl: http://192.168.8.31:8877
 
-#本地
-cdssurl: http://192.168.8.20:8011
-earlywarnurl: http://192.168.8.20:8111
-pagetesturl: http://192.168.8.20:8112
-#testToolUrl: http://192.168.8.20:7088
-testToolUrl: http://localhost:7088
+testToolUrl: http://192.168.8.20:7088
