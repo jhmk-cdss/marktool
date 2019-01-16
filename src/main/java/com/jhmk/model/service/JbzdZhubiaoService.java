@@ -176,19 +176,45 @@ public class JbzdZhubiaoService {
         List<Shouyezhenduan> shouyezhenduanList = rule.getShouyezhenduan();
         List<BiaozhuJbzdmodel> biaozhuJbzdmodelLists = new ArrayList<>();
         for(Shouyezhenduan shouyezhenduan : shouyezhenduanList){
-            BiaozhuJbzdmodel biaozhuJbzdmodel = new BiaozhuJbzdmodel();
-            biaozhuJbzdmodel.setDifferentialDiagnosisNum(shouyezhenduan.getDiagnosis_num());
-            biaozhuJbzdmodel.setDifferentialDiagnosisName(shouyezhenduan.getDiagnosis_name());
-            biaozhuJbzdmodel.setDifferentialDiagnosisCauseDescribe(shouyezhenduan.getDiagnosis_desc());
+            if("1".equals(shouyezhenduan.getDiagnosis_num()) && "入院初诊".equals(shouyezhenduan.getDiagnosis_type_name())){
+                BiaozhuJbzdmodel biaozhuJbzdmodel = new BiaozhuJbzdmodel();
+                BiaozhuJbzdcause biaozhuJbzdcause = new BiaozhuJbzdcause();
+                BiaozhuTzysmodel biaozhuTzysmodel = new BiaozhuTzysmodel();
 
-            //首次病程
-            Shoucibingchengjilu shoucibingchengjilu = rule.getShoucibingchengjilu();
-            //诊断与鉴别诊断
-            DiagnosisAndDifferentialDiagnosis diagnosisAndDifferentialDiagnosis = shoucibingchengjilu.getDiagnosisAndDifferentialDiagnosis();
-            List<FirstCourseDifferentialDiagnosis> firstCourseDifferentialDiagnosisList = diagnosisAndDifferentialDiagnosis.getFirstCourseDifferentialDiagnosisList();
-            //鉴别诊断模型
-            List<BiaozhuJbzdcause> biaozhuJbzdcauseList = new ArrayList<>(firstCourseDifferentialDiagnosisList.size());
-            for (FirstCourseDifferentialDiagnosis differentialDiagnosis : firstCourseDifferentialDiagnosisList) {
+                List<BiaozhuJbzdcause> biaozhuJbzdcauseList = new ArrayList<>();
+                List<BiaozhuTzysmodel> biaozhuTzysmodelList = new ArrayList<>();
+
+                biaozhuTzysmodel.setId(0);
+                biaozhuTzysmodel.setFeaturesQualResult("");
+                biaozhuTzysmodel.setFeaturesQuantizationResult("");
+                biaozhuTzysmodel.setFeaturesQuantizationUnit("");
+                biaozhuTzysmodel.setFeaturesQuantizationHigh("");
+                biaozhuTzysmodel.setFeaturesQuantizationLow("");
+                biaozhuTzysmodel.setFeaturesName("");
+                biaozhuTzysmodel.setFeaturesType("");
+                biaozhuTzysmodel.setDifferentialDiagnosisFeature(null);
+                biaozhuTzysmodel.setPatientFeature(null);
+                biaozhuTzysmodelList.add(biaozhuTzysmodel);
+
+                biaozhuJbzdcause.setDifferentialDiagnosisFeatures(biaozhuTzysmodelList);
+                biaozhuJbzdcause.setId(0);
+                biaozhuJbzdcause.setPatientFeatures(biaozhuTzysmodelList);
+                biaozhuJbzdcause.setDifferentialDiagnosisExam("");
+                biaozhuJbzdcause.setDifferentialDiagnosisLab("");
+                biaozhuJbzdcause.setBiaozhuJbzdmodel(null);
+                biaozhuJbzdcauseList.add(biaozhuJbzdcause);
+//                biaozhuJbzdmodel.setDifferentialDiagnosisNum(shouyezhenduan.getDiagnosis_num());
+//                biaozhuJbzdmodel.setDifferentialDiagnosisName(shouyezhenduan.getDiagnosis_name());
+//                biaozhuJbzdmodel.setDifferentialDiagnosisCauseDescribe(shouyezhenduan.getDiagnosis_desc());
+
+                //首次病程
+//                Shoucibingchengjilu shoucibingchengjilu = rule.getShoucibingchengjilu();
+                //诊断与鉴别诊断
+//                DiagnosisAndDifferentialDiagnosis diagnosisAndDifferentialDiagnosis = shoucibingchengjilu.getDiagnosisAndDifferentialDiagnosis();
+//                List<FirstCourseDifferentialDiagnosis> firstCourseDifferentialDiagnosisList = diagnosisAndDifferentialDiagnosis.getFirstCourseDifferentialDiagnosisList();
+//                //鉴别诊断模型
+//                List<BiaozhuJbzdcause> biaozhuJbzdcauseList = new ArrayList<>(firstCourseDifferentialDiagnosisList.size());
+            /*for (FirstCourseDifferentialDiagnosis differentialDiagnosis : firstCourseDifferentialDiagnosisList) {
                 //编号
 //                String differential_diagnostic_no = differentialDiagnosis.getDifferential_diagnostic_no();
 //                //鉴别原疾病
@@ -218,9 +244,16 @@ public class JbzdZhubiaoService {
                 biaozhuJbzdcause.setPatientFeatures(list);
                 biaozhuJbzdcause.setDifferentialDiagnosisFeatures(list);
                 biaozhuJbzdcauseList.add(biaozhuJbzdcause);
+            }*/
+                biaozhuJbzdmodel.setBiaozhuJbzdcauseList(biaozhuJbzdcauseList);
+                biaozhuJbzdmodel.setId(0);
+                biaozhuJbzdmodel.setDifferentialDiagnosisCauseDescribe("");
+                biaozhuJbzdmodel.setDifferentialDiagnosisName("");
+                biaozhuJbzdmodel.setDifferentialDiagnosisNum("");
+                biaozhuJbzdmodel.setBiaozhuZhubiao(new BiaozhuZhubiao());
+                biaozhuJbzdmodel.setDiagnosisName("");
+                biaozhuJbzdmodelLists.add(biaozhuJbzdmodel);
             }
-            biaozhuJbzdmodel.setBiaozhuJbzdcauseList(biaozhuJbzdcauseList);
-            biaozhuJbzdmodelLists.add(biaozhuJbzdmodel);
         }
         zhubiao.setBiaozhuJbzdmodelList(biaozhuJbzdmodelLists);
 
