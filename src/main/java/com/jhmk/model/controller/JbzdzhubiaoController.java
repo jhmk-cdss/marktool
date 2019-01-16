@@ -111,19 +111,19 @@ public class JbzdzhubiaoController extends BaseEntityController<BiaozhuZhubiao> 
         JSONObject jsonObject = JSONObject.parseObject(map);
         String pid = jsonObject.getString("pid");
         String vid = jsonObject.getString("vid");
-        String id = jsonObject.getString("id");
+        /*String id = jsonObject.getString("id");
         String[] ids = null;
         if(id!=null && id.length()>0){
             ids=id.split("#");
         }
-        if(ids.length==3){
+        if(ids!=null && ids.length==3){
             pid = ids[1];
             vid = ids[2];
         }else{
             resp.setData("参数有误");
             resp.setResponseCode(ResponseCode.COMERROR);
             wirte(response, resp);
-        }
+        }*/
         if(pid ==null || pid=="" || vid==null || vid==""){
             resp.setData("参数有误");
             resp.setResponseCode(ResponseCode.COMERROR);
