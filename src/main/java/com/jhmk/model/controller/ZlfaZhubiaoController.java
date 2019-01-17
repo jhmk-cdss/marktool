@@ -406,8 +406,8 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
             Integer inHospitalDays = zhubiao.getInHospitalDays();
 
             //治疗方案
-//            Set<ZlfaCompareBean> zlfaCompareBeanList = new HashSet<>();
-            List<ZlfaCompareBean> zlfaCompareBeanList = new ArrayList<>();
+            Set<ZlfaCompareBean> zlfaCompareBeanList = new HashSet<>();
+//            List<ZlfaCompareBean> zlfaCompareBeanList = new ArrayList<>();
             List<ZlfaModel> zlfaModelList = zhubiao.getZlfaModelList();
             if (zlfaModelList != null && zlfaModelList.size() > 0) {
                 for (ZlfaModel zlfaModel : zlfaModelList) {
