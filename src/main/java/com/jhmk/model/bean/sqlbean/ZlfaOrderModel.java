@@ -53,6 +53,7 @@ public class ZlfaOrderModel implements Serializable {
     private String prescTime;
     private String patientId;
     private String visitId;
+    private String standardName;
 
     @JSONField(serialize = false)
     private ZlfaMianDiagnosisDetail zlfaMianDiagnosisDetail;
@@ -463,6 +464,16 @@ public class ZlfaOrderModel implements Serializable {
         this.zlfaMianDiagnosisDetail = zlfaMianDiagnosisDetail;
     }
 
+
+    @Basic
+    @Column(name = "standard_name", nullable = true, length = 255)
+    public String getStandardName() {
+        return standardName;
+    }
+
+    public void setStandardName(String standardName) {
+        this.standardName = standardName;
+    }
 
     @Override
     public boolean equals(Object o) {

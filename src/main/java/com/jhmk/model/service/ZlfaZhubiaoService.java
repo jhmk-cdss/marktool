@@ -6,6 +6,7 @@ import com.jhmk.model.bean.sqlbean.*;
 import com.jhmk.model.bean.sqlbean.repository.service.*;
 import com.jhmk.model.config.UrlPropertiesConfig;
 import com.jhmk.model.util.CompareUtil;
+import com.jhmk.model.util.DocumentUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class ZlfaZhubiaoService {
     ZlfaIncidentModelRepService zlfaIncidentModelRepService;
     @Autowired
     UrlPropertiesConfig urlPropertiesConfig;
+    @Autowired
+    DocumentUtil documentUtil;
     @Autowired
     ZlfaUpdateAddModelDetailRepService zlfaUpdateAddModelDetailRepService;
 
@@ -369,7 +372,7 @@ public class ZlfaZhubiaoService {
         ArrayList<String> dayTimeList = new ArrayList(dayTimeSet);
         Collections.sort(dayTimeList);
 //        Collections.sort(yizhuList, CompareUtil.createComparator(-1, "dayTime"));
-        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList,shouyeshoushu);
+        List<ZlfaModel> zlfaModelList = getZlfaModelList(dayTimeList, yizhuList, shouyeshoushu);
         zhubiao.setZlfaModelList(zlfaModelList);
         return zhubiao;
     }
@@ -688,7 +691,8 @@ public class ZlfaZhubiaoService {
         Optional.ofNullable(yizhu.getPharmacy_way_name()).ifPresent(s -> zlfaOrderModel.setPharmacyWayName(s));
         Optional.ofNullable(yizhu.getDischarge_medicine_indicator()).ifPresent(s -> zlfaOrderModel.setDischargeMedicineIndicator(s));
         Optional.ofNullable(yizhu.getPresc_time()).ifPresent(s -> zlfaOrderModel.setPrescTime(s));
-
+        String standardFromAlias = documentUtil.getStandardFromAlias(zlfaOrderModel.getOrderItemName());
+        zlfaOrderModel.setStandardName(standardFromAlias);
         return zlfaOrderModel;
     }
 

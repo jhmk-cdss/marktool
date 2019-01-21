@@ -18,6 +18,7 @@ public class UrlConstants {
 
 
 
+
     //知识库接口
 
     //  获取一个词的同义词列表
@@ -25,7 +26,7 @@ public class UrlConstants {
     //获取一个词的标准名称
     public static final String standardFromAlias = "/med/cdss/standardFromAlias.json";
     public static final String getAllChildDisease = "/med/cdss/getAllChildDisease.json";
-
-
+    //根据药品层级，返回该层级的所有药品
+    public static final String getMedicineFromLevelName = "/med/cdss/getMedicineFromLevelName.json";
 
 }

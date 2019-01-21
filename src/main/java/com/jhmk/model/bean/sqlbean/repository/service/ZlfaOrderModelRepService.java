@@ -72,4 +72,19 @@ public class ZlfaOrderModelRepService extends BaseRepService<ZlfaOrderModel, Int
     public List<ZlfaOrderModel> findAllByOrderItemName(String orderItemName) {
         return repository.findAllByOrderItemName(orderItemName);
     }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<String> findDistinctByOrderItemName() {
+        return repository.findDistinctByOrderItemName();
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public long count() {
+        return repository.count();
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public int updateStandardName(String standardName, String orderItemName) {
+        return repository.updateStandardName(standardName, orderItemName);
+    }
 }
