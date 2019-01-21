@@ -425,12 +425,12 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                                     String orderItemName = zlfaOrderModel.getOrderItemName();
                                     if (StringUtils.isNotEmpty(orderItemName)) {
                                         //获取标准名
-                                        String standardFromAlias = documentUtil.getStandardFromAlias(orderItemName);
-                                        if (StringUtils.isNotEmpty(standardFromAlias)) {
-                                            zlfaCompareBean.setOrderItemName(standardFromAlias);
-                                        } else {
+//                                        String standardFromAlias = documentUtil.getStandardFromAlias(orderItemName);
+//                                        if (StringUtils.isNotEmpty(standardFromAlias)) {
+//                                            zlfaCompareBean.setOrderItemName(standardFromAlias);
+//                                        } else {
                                             zlfaCompareBean.setOrderItemName(orderItemName);
-                                        }
+//                                        }
                                     }
                                 } else {
                                     zlfaCompareBean.setOrderItemName("");
@@ -616,6 +616,14 @@ public class ZlfaZhubiaoController extends BaseEntityController<ZlfaZhubiao> {
                 wirte(response, save);
             }
         }
+
+    }
+
+    @GetMapping("/demo0121")
+    public void demo0121(HttpServletResponse response) {
+//        zlfaZhubiaoService.test();
+        zlfaZhubiaoService.test1();
+        wirte(response, "Ok");
 
     }
 

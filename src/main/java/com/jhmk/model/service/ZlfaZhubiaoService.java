@@ -7,13 +7,19 @@ import com.jhmk.model.bean.sqlbean.repository.service.*;
 import com.jhmk.model.config.UrlPropertiesConfig;
 import com.jhmk.model.util.CompareUtil;
 import com.jhmk.model.util.DocumentUtil;
+import com.jhmk.model.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.*;
 
+import static com.jhmk.model.service.InitDataService.drugPurposeMap;
 import static com.jhmk.model.service.InitDataService.yizhuMap;
 
 /**
@@ -45,7 +51,39 @@ public class ZlfaZhubiaoService {
     @Autowired
     ZlfaUpdateAddModelDetailRepService zlfaUpdateAddModelDetailRepService;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public void test() {
+        String sql = "SELECT count(DISTINCT(z.discharge_main_diagnosis)) from zlfn_zhubiao z;";
+        Query query = entityManager.createNativeQuery(sql);
+        if (query != null && query.getResultList() != null
+                && query.getResultList().size() > 0) {
+            Object singleResult = query.getSingleResult();
+            System.out.println("开始啦=============");
+            System.out.println(JSONObject.toJSONString(singleResult));
+            System.out.println("结束啦=============");
+        }
+    }
+
     @Transactional
+    public void test1() {
+        Set<String> set = drugPurposeMap.keySet();
+        String sql = null;
+        for (String str : set) {
+            String purpose = drugPurposeMap.get(str);
+            if (StringUtils.isNotBlank(purpose)) {
+                sql = "UPDATE zlfn_mian_diagnosis_detail d, zlfn_order_model m SET treatment_goals = '" + purpose + "',not_included_order_indicator=1 WHERE m.zlfa_mian_diagnosis_detail_id = d.id AND m.order_item_name = '" + str + "' AND m.zlfa_mian_diagnosis_detail_id != 1;";
+            } else {
+                sql = "UPDATE zlfn_mian_diagnosis_detail d, zlfn_order_model m SET treatment_goals = '',not_included_order_indicator=2 WHERE m.zlfa_mian_diagnosis_detail_id = d.id AND m.order_item_name = '" + str + "' AND m.zlfa_mian_diagnosis_detail_id != 1;";
+            }
+            Query query = entityManager.createNativeQuery(sql);
+            int result = query.executeUpdate();
+            System.out.println(str + "开始啦============="+"结果为"+result);
+        }
+    }
+
+//    @Transactional
 //    public void saveAll(String map) {
 //        ZlfaZhubiao zlfaZhubiao = JSONObject.parseObject(map, ZlfaZhubiao.class);
 //        List<ZlfaModel> zlfaModelList = zlfaZhubiao.getZlfaModelList();
@@ -444,7 +482,8 @@ public class ZlfaZhubiaoService {
      * @param yizhuList
      * @return
      */
-    public List<ZlfaModel> getZlfaModelList(List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
+    public List<ZlfaModel> getZlfaModelList
+    (List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
         List<ZlfaModel> resultList = new ArrayList<>();
         //
         for (int i = 1; i <= orderTimeList.size(); i++) {
@@ -504,7 +543,8 @@ public class ZlfaZhubiaoService {
 //        return resultList;
 //    }
 
-    public List<ZlfaModel> getZlfaModel(List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
+    public List<ZlfaModel> getZlfaModel
+            (List<String> orderTimeList, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
         List<ZlfaModel> resultList = new ArrayList<>();
         //
         //第一天开医嘱时间
@@ -615,7 +655,8 @@ public class ZlfaZhubiaoService {
         return resultList;
     }
 
-    public List<ZlfaMianDiagnosisDetail> getZlfaMianDiagnosisDetail(String orderTime, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
+    public List<ZlfaMianDiagnosisDetail> getZlfaMianDiagnosisDetail(String
+                                                                            orderTime, List<Yizhu> yizhuList, List<Shouyeshoushu> shouyeshoushuList) {
         List<ZlfaMianDiagnosisDetail> resultList = new ArrayList<>();
         for (int j = 0; j < yizhuList.size(); j++) {
             Yizhu yizhu = yizhuList.get(j);
