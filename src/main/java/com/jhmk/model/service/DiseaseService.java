@@ -3,12 +3,14 @@ package com.jhmk.model.service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jhmk.model.config.UrlPropertiesConfig;
+import com.jhmk.model.util.DocumentUtil;
 import com.jhmk.model.util.UrlConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +24,8 @@ public class DiseaseService {
     @Autowired
     UrlPropertiesConfig urlPropertiesConfig;
     @Autowired
+    DocumentUtil documentUtil;
+    @Autowired
     RestTemplate restTemplate;
 
     //疾病1是否是疾病2的子疾病
@@ -32,8 +36,20 @@ public class DiseaseService {
         Map<String, String> param = new HashMap<>();
         param.put("diseaseName", name2);
         Object parse1 = JSONObject.toJSON(param);
-        String childList = restTemplate.postForObject(urlPropertiesConfig.getCdssurl()+UrlConstants.getDiseaseChildrenList, parse1, String.class);
+        String childList = restTemplate.postForObject(urlPropertiesConfig.getCdssurl() + UrlConstants.getDiseaseChildrenList, parse1, String.class);
         if (childList != null && childList.contains(name1)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isParentOrChildByEs(String name1, String name2) {
+        if (name2.equals(name1)) {
+            return true;
+        }
+        List<String> allChildDisease = documentUtil.getAllChildDisease(name2);
+        if (allChildDisease != null && allChildDisease.contains(name1)) {
             return true;
         } else {
             return false;
@@ -46,7 +62,7 @@ public class DiseaseService {
             Map<String, String> map = (Map) jsonArray.get(i);
             Set<String> set = map.keySet();
             for (String str : set) {
-                boolean flag = isParentOrChild(data, str);
+                boolean flag = isParentOrChildByEs(data, str);
                 if (flag) {
                     return i;
                 }
